@@ -9,8 +9,6 @@ import { Button } from "../ui/button";
 import { GitHubIcon, GoogleIcon } from "../icons";
 import Image from "next/image"
 import Link from "next/link";
-import { signIn } from "@/lib/auth/actions";
-import { useState } from "react";
 
 const authSchema = z.object({
     username: z.string().min(4),
