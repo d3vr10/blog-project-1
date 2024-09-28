@@ -1,6 +1,6 @@
 "use client";
 
-import { useForm } from "react-hook-form";
+import { type SubmitHandler, useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Form, FormField, FormControl, FormDescription, FormItem, FormLabel, FormMessage } from "../ui/form";
@@ -9,21 +9,24 @@ import { Button } from "../ui/button";
 import { GitHubIcon, GoogleIcon } from "../icons";
 import Image from "next/image"
 import Link from "next/link";
+import LoaderButton from "../loader-button";
 
 const authSchema = z.object({
     username: z.string().min(4),
     password: z.string().min(8),
 })
 
+type AuthSchemaType = z.infer<typeof authSchema>
+
 export default function AuthForm() {
-    const form = useForm({ mode: "all", resolver: zodResolver(authSchema) })
+    const form = useForm<AuthSchemaType>({ mode: "all", resolver: zodResolver(authSchema) })
     const { formState: { errors }, formState } = form;
-    const onSubmit = async ({ username, password }) => {
-        await new Promise((resolve) => setTimeout(() => resolve(), 2000))
+    const onSubmit: SubmitHandler<AuthSchemaType> = async ({ username, password }) => {
+        await new Promise((resolve) => setTimeout(() => resolve(null), 2000))
         alert("To be implemented")
         // const result = await signIn(username, password)
         // if (result.status === 200) {
-        
+
         // }
     }
     return (
@@ -55,8 +58,8 @@ export default function AuthForm() {
                         </FormItem>
                     )}
                 />
-                <Button disabled={formState.isSubmitting}>{formState.isSubmitting ? <span className="animate-spin rounded-full h-6 w-6 border-4 border-zinc-700 border-t-transparent"></span> : "Login"}</Button>
-
+                <LoaderButton isSubmitting={formState.isSubmitting} />
+                
                 {errors?.root ? <div className="text-sm text-red-800 text-center">{errors.root.message}</div> : ""}
 
                 <div className="text-center"><Link href={""} className="text-blue-400 text-sm">Forgot password?</Link></div>
