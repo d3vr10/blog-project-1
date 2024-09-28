@@ -2,7 +2,7 @@
 
 import { Button } from "./ui/button";
 
-export default function LoaderButton({ isSubmitting }: { isSubmitting: boolean }) {
+export default function LoaderSubmitButton({ isSubmitting }: { isSubmitting: boolean }) {
     return (
         <Button
             type="submit"

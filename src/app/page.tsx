@@ -4,11 +4,11 @@ import db from "@/lib/db";
 export default async function Home() {
   const articles = await db.query.articleSchema.findMany()
   return (
-    <div className="grid lg:grid-cols-3">
+    <div className="grid lg:grid-cols-3 gap-6">
       {articles.map((article) => (
-        <Card>
+        <Card key={article.id}>
           <CardHeader>
-            <Image src={article.featuredImageURL || "/images/not-found.png"} width={300} height={300} alt="Article's Featured Image" />
+            <Image src={article.featuredImageURL || "/images/not-found.jpg"} width={300} height={300} className="aspect-video object-cover w-full rounded-xl" alt="Article's Featured Image" />
           </CardHeader>
           <CardContent>
             <CardTitle>{article.title}</CardTitle>

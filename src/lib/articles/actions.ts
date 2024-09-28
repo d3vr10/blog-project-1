@@ -1,6 +1,9 @@
-import { createSchema } from "@/components/article/create-form";
+"use server";
+
+
 import db from "../db";
 import { articleSchema } from "../db/schemas";
+import { createSchema } from "../schemas/article";
 import { slugify } from "../utils";
 
 export async function createArticle(values: {
@@ -18,7 +21,24 @@ export async function createArticle(values: {
             featuredImageURL,
             slug: slugify(title),
         })
-    } catch (err) {
-        throw err
+        return {
+            status: 201,
+            message: "Article created"
+        }
+    } catch (err: any) {
+        if (err.code === "SQLITE_CONSTRAINT_UNIQUE") {
+            return {
+                status: 409,
+                error: {
+                    message: "An article with this title already exists",
+                }
+            }
+        }
+        return {
+            status: 500,
+            error: {
+                message: "Unknown error"
+            }
+        }
     }
 }

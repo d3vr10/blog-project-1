@@ -2,30 +2,55 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { z } from "zod";
 import { Form, FormField, FormItem, FormLabel, FormMessage, FormDescription, FormControl } from "../ui/form";
 import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
 import { Button } from "../ui/button";
 import clsx from "clsx";
-import { Loader2 } from "lucide-react";
-import LoaderButton from "../loader-button";
+import LoaderSubmitButton from "../loader-submit-button";
+import { useRouter } from "next/navigation";
+import { CreateArticleSchema, createSchema } from "@/lib/schemas/article";
+import { createArticle } from "@/lib/articles/actions";
+import { useToast } from "@/hooks/use-toast";
+import { ToastAction } from "@radix-ui/react-toast";
 
-export const createSchema = z.object({
-    title: z.string().min(1),
-    content: z.string().min(1),
-    excerpt: z.string().min(1),
-    featuredImageURL: z.string().url().optional(),
-})
 
-export type CreateArticleSchema = z.infer<typeof createSchema>
 
 export default function CreateForm() {
+    const router = useRouter()
+    const { toast } = useToast()
     const form = useForm<CreateArticleSchema>({ mode: "all", resolver: zodResolver(createSchema) })
-    const { handleSubmit, control, formState } = form
+    const { setError, handleSubmit, control, formState } = form
     const onSubmit: SubmitHandler<CreateArticleSchema> = async ({ title, content, excerpt, featuredImageURL }) => {
-        await new Promise((resolve) => setTimeout(() => resolve(null), 2000))
-        alert("To be implemented...")
+
+        const result = await createArticle({
+            title,
+            content,
+            excerpt,
+            featuredImageURL,
+        })
+        if (result.error) {
+            let message = ""
+            if (result.status === 409)
+                message = "An article with this title already exists"
+            if (result.status === 401)
+                message = "Invalid credentials"
+
+            setError("root", { message: message })
+            toast({
+                title: "Authentication Error",
+                description: message,
+                variant: "destructive",
+            })
+            return;
+        }
+        
+        toast({
+            title: "Success",
+            description: "New article has been created",
+        })
+        router.push("/")
+
     }
     return (
         <Form {...form}>
@@ -89,7 +114,7 @@ export default function CreateForm() {
                         excerpt: "",
                         featuredImageURL: "",
                     })}>Clear</Button>
-                    <LoaderButton isSubmitting={formState.isSubmitting} />
+                    <LoaderSubmitButton isSubmitting={formState.isSubmitting} />
                 </div>
             </form>
         </Form >
