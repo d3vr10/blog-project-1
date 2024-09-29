@@ -5,7 +5,7 @@ import db from "../db";
 import { userSchema } from "../db/schemas";
 import argon from "argon2"
 import { cookies } from "next/headers";
-import { encrypt } from "./jwt";
+import { encrypt, verify } from "./jwt";
 
 export async function signIn(username: string, password: string) {
     const user = await db.query.userSchema.findFirst({
@@ -93,4 +93,31 @@ export async function signUp({
         }
     }
 
+}
+
+export async function validateSession() {
+    const cookie = cookies().get("auth_token")
+    if (cookie) {
+        const { name: key, value } = cookie
+        try {
+            await verify(value)
+            return {
+                status: 200,
+                message: "Session has been extended by 2 hours",
+            }
+        } catch (err: any) {
+            return {
+                status: 401,
+                error: {
+                    message: "Session is invalid!",
+                }
+            }
+        }
+    }
+    return {
+        status: 404,
+        error: {
+            message: "Session does not exist",
+        }
+    }
 }

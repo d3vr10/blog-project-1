@@ -19,7 +19,7 @@ export default function Navbar() {
                 </div>
                 <div className="flex items-center gap-x-4">
                     <ToggleThemeDropdown />
-                    {auth && `Hello, ${auth.username}` || <AuthDialog />}
+                    {auth && `Hello, <span className="font-semibold">${auth.username}</span>` || <AuthDialog />}
                 </div>
             </div>
         </nav>

@@ -1,6 +1,7 @@
 "use client";
 
-import { createContext, useContext, useState } from "react";
+import { validateSession } from "@/lib/auth/actions";
+import { createContext, useContext, useEffect, useState } from "react";
 
 const initialValue = undefined
 
@@ -14,6 +15,14 @@ export function useAuth() {
 }
 export default function AuthProvider({ children }: { children: React.ReactNode }) {
     const [auth, setAuth] = useState(initialValue)
+    useEffect(() => {
+        (async () => {
+            const result = await validateSession()
+            if (!result.error) {
+                const { setAuth } = useAuth()
+            }
+        })()
+    })
     return (
         <AuthContext.Provider value={{ auth, setAuth }}>
             {children}
