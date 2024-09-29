@@ -15,11 +15,16 @@ export async function signIn(username: string, password: string) {
     if (user) {
         const passwordMatch = await argon.verify(user.password, password)
         if (passwordMatch) {
-            const jwt = await encrypt({ username: user.username })
+            const payload = {
+                email: user.email,
+                username: user.username
+            }
+            const jwt = await encrypt(payload)
             cookies().set("auth_token", jwt)
             return {
                 status: 200,
-                message: "Authenticated successfully!"
+                message: "Authenticated successfully!",
+                payload: payload
             }
         }
 
@@ -49,11 +54,16 @@ export async function signUp({
             username: username,
             password: hash,
         }).returning()
-        const token = await encrypt({ username: user.username })
+        const payload = {
+            email: user.email,
+            username: user.username
+        }
+        const token = await encrypt(payload)
         cookies().set("auth_token", token)
         return {
             status: 200,
-            message: `Account "${username}" has been created`
+            message: `Account "${username}" has been created`,
+            payload: payload
         }
     } catch (err: any) {
         if (err.code === "SQLITE_CONSTRAINT_UNIQUE") {

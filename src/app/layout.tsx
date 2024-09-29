@@ -4,6 +4,7 @@ import "./globals.css";
 import Navbar from "@/components/navbar";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/toaster";
+import AuthProvider from "@/components/auth/context";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -38,10 +39,12 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <Navbar />
-          <div className="p-4 max-w-[1366px] mx-auto">{children}</div>
+          <AuthProvider>
+            <Navbar />
+            <div className="p-4 max-w-[1366px] mx-auto">{children}</div>
+          </AuthProvider>
         </ThemeProvider>
-        <Toaster/>
+        <Toaster />
       </body>
     </html>
   );

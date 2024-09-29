@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import AuthForm from "./auth-form";
+import SigninForm from "./signin-form";
 
 export function AuthDialog() {
   return (
@@ -25,7 +25,7 @@ export function AuthDialog() {
           <DialogTitle>Who are you?</DialogTitle>
         </DialogHeader>
         <div className="grid gap-4 py-4">
-          <AuthForm />
+          <SigninForm />
         </div>
         <DialogFooter>
           <Button type="submit">Save changes</Button>

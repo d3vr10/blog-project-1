@@ -10,10 +10,12 @@ import { Button } from "../ui/button";
 import { signUp } from "@/lib/auth/actions";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "./context";
 
 
 
 export default function SignupForm() {
+    const auth = useAuth()
     const router = useRouter()
     const { toast } = useToast()
     const form = useForm<UserCreateType>({ mode: "all", resolver: zodResolver(userCreateSchema) })
@@ -22,7 +24,7 @@ export default function SignupForm() {
         const response = await signUp(values)
         if (response.error) {
             let title = ""
-            let message = "" 
+            let message = ""
             if (response.status === 409) {
                 title = "Sign up Error"
                 message = "This account already exists"
@@ -31,6 +33,9 @@ export default function SignupForm() {
                 title = "Server Error"
                 message = "Something happened on our side. It's not you. We'll be working on it"
             }
+        }
+        else {
+            auth.setAuth(response.payload)
         }
         toast({
             title: "Success",

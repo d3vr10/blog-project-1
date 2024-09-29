@@ -13,6 +13,7 @@ import LoaderSubmitButton from "../loader-submit-button";
 import { signIn } from "@/lib/auth/actions";
 import { useToast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
+import { useAuth } from "./context";
 
 const authSchema = z.object({
     username: z.string().min(4),
@@ -21,7 +22,8 @@ const authSchema = z.object({
 
 type AuthSchemaType = z.infer<typeof authSchema>
 
-export default function AuthForm() {
+export default function SigninForm() {
+    const auth = useAuth()
     const router = useRouter()
     const { toast } = useToast()
     const form = useForm<AuthSchemaType>({ mode: "all", resolver: zodResolver(authSchema) })
@@ -43,6 +45,8 @@ export default function AuthForm() {
                 title: title,
                 description: message,
             })
+        } else {
+            auth.setAuth(response.payload)
         }
         toast({
             title: "Success",

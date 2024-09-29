@@ -1,9 +1,9 @@
 import { SignJWT, jwtVerify } from "jose";
 import env from "../env";
 
-export async function encrypt(payload: { username: string }) {
+export async function encrypt(payload: { username: string, email: string }) {
     const encodedSecret = new TextEncoder().encode(env.JWT_SECRET)
-    const jwt = await new SignJWT()
+    const jwt = await new SignJWT(payload)
         .setExpirationTime(new Date(Date.now() + 1000 * 60 * 60 * 2))
         .setProtectedHeader({ alg: env.JWT_ALGO })
         .setIssuedAt()
