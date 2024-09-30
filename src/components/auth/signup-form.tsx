@@ -18,7 +18,16 @@ export default function SignupForm() {
     const auth = useAuth()
     const router = useRouter()
     const { toast } = useToast()
-    const form = useForm<UserCreateType>({ mode: "all", resolver: zodResolver(userCreateSchema) })
+    const form = useForm<UserCreateType>({ 
+        defaultValues: {
+            username: "",
+            email: "",
+            password: "",
+            repeatPassword: "",
+        },
+        mode: "all", 
+        resolver: zodResolver(userCreateSchema) 
+    })
     const { setError, formState, handleSubmit, control } = form
     const onSubmit: SubmitHandler<UserCreateType> = async (values) => {
         const response = await signUp(values)

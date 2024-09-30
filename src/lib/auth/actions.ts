@@ -16,6 +16,7 @@ export async function signIn(username: string, password: string) {
         const passwordMatch = await argon.verify(user.password, password)
         if (passwordMatch) {
             const payload = {
+                id: user.id,
                 email: user.email,
                 username: user.username
             }
@@ -55,6 +56,7 @@ export async function signUp({
             password: hash,
         }).returning()
         const payload = {
+            id: user.id,
             email: user.email,
             username: user.username
         }
@@ -98,11 +100,13 @@ export async function signUp({
 export async function validateSession() {
     const cookie = cookies().get("auth_token")
     if (cookie) {
-        const { name: key, value } = cookie
+        const { value } = cookie
         try {
-            await verify(value)
+            const jwtPayload = await verify(value)
+            const payload = { id: jwtPayload.id as string, username: jwtPayload.username as string, email: jwtPayload.email as string }
             return {
                 status: 200,
+                payload: payload,
                 message: "Session has been extended by 2 hours",
             }
         } catch (err: any) {
@@ -120,4 +124,8 @@ export async function validateSession() {
             message: "Session does not exist",
         }
     }
+}
+
+export async function logout() {
+    cookies().delete("auth_token")
 }

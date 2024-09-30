@@ -26,7 +26,13 @@ export default function SigninForm() {
     const auth = useAuth()
     const router = useRouter()
     const { toast } = useToast()
-    const form = useForm<AuthSchemaType>({ mode: "all", resolver: zodResolver(authSchema) })
+    const form = useForm<AuthSchemaType>({
+        mode: "all", resolver: zodResolver(authSchema),
+        defaultValues: {
+            username: "",
+            password: ""
+        }
+    })
     const { formState: { errors }, formState } = form;
     const onSubmit: SubmitHandler<AuthSchemaType> = async ({ username, password }) => {
         const response = await signIn(username, password)
@@ -44,10 +50,12 @@ export default function SigninForm() {
             toast({
                 title: title,
                 description: message,
+                variant: "destructive",
             })
-        } else {
-            auth.setAuth(response.payload)
+            return;
         }
+
+        auth.setAuth(response.payload)
         toast({
             title: "Success",
             description: "You have been authenticated",
@@ -84,7 +92,7 @@ export default function SigninForm() {
                     )}
                 />
                 <LoaderSubmitButton isSubmitting={formState.isSubmitting} />
-                
+
                 {errors?.root ? <div className="text-sm text-red-800 text-center">{errors.root.message}</div> : ""}
 
                 <div className="text-center"><Link href={""} className="text-blue-400 text-sm">Forgot password?</Link></div>

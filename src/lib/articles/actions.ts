@@ -1,6 +1,7 @@
 "use server";
 
 
+import { eq } from "drizzle-orm";
 import db from "../db";
 import { articleSchema } from "../db/schemas";
 import { createSchema } from "../schemas/article";
@@ -11,6 +12,7 @@ export async function createArticle(values: {
     content: string,
     excerpt: string,
     featuredImageURL?: string,
+    userId: string,
 }) {
     try {
         const { title, content, excerpt, featuredImageURL } = createSchema.parse(values)
@@ -20,6 +22,7 @@ export async function createArticle(values: {
             excerpt,
             featuredImageURL,
             slug: slugify(title),
+            userId: values.userId,
         })
         return {
             status: 201,
@@ -41,4 +44,31 @@ export async function createArticle(values: {
             }
         }
     }
+}
+
+
+export async function deleteArticle(slug: string) {
+    try {
+        const articles = await db.delete(articleSchema).where(eq(articleSchema.slug, slug)).returning()
+        if (articles.length > 0) {
+            return {
+                status: 200,
+                message: `Article "${slug}" was deleted`
+            }
+        } else return {
+            status: 404,
+            error: {
+                message: `Article ${slug} does not exist!`
+
+            }
+        }
+    } catch (err: any) {
+        return {
+            status: 500,
+            error: {
+                message: "There was an error while attempting to delete from the database."
+            }
+        }
+    }
+
 }

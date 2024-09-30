@@ -12,39 +12,67 @@ import { useRouter } from "next/navigation";
 import { CreateArticleSchema, createSchema } from "@/lib/schemas/article";
 import { createArticle } from "@/lib/articles/actions";
 import { useToast } from "@/hooks/use-toast";
+import { debounce, throttle } from "lodash"
+
 import { ToastAction } from "@radix-ui/react-toast";
+import { useAuth } from "../auth/context";
+import { validateSession } from "@/lib/auth/actions";
 
 
 
 export default function CreateForm() {
+    const { auth } = useAuth() 
     const router = useRouter()
     const { toast } = useToast()
-    const form = useForm<CreateArticleSchema>({ mode: "all", resolver: zodResolver(createSchema) })
+    const form = useForm<CreateArticleSchema>({
+        mode: "all",
+        resolver: zodResolver(createSchema),
+        defaultValues: {
+            content: "",
+            excerpt: "",
+            title: "",
+            featuredImageURL: "",
+        }
+    })
+    const onChangeFile = debounce(() => {
+
+    }, 5000, { leading: true })
     const { setError, handleSubmit, control, formState } = form
     const onSubmit: SubmitHandler<CreateArticleSchema> = async ({ title, content, excerpt, featuredImageURL }) => {
-
-        const result = await createArticle({
+        const validResult = await validateSession()
+        if (validResult.error) {
+            toast({
+                title: "Unauthorized",
+                description: "Invalid session!",
+                variant: "destructive",
+            })
+            router.push("/")
+            return;
+        }
+        const createResult = await createArticle({
             title,
             content,
             excerpt,
             featuredImageURL,
+            userId: validResult.payload.id,
         })
-        if (result.error) {
-            let message = ""
-            if (result.status === 409)
+        if (createResult.error) {
+            let title = "Unknown Error"
+            let message = "unknown error"
+            if (createResult.status === 409) {
                 message = "An article with this title already exists"
-            if (result.status === 401)
-                message = "Invalid credentials"
+            }
 
             setError("root", { message: message })
             toast({
-                title: "Authentication Error",
-                description: message,
+                title: title,
+                description: message? message : undefined,
                 variant: "destructive",
             })
             return;
         }
-        
+
+    
         toast({
             title: "Success",
             description: "New article has been created",
