@@ -17,6 +17,7 @@ import { debounce, throttle } from "lodash"
 import { ToastAction } from "@radix-ui/react-toast";
 import { useAuth } from "../auth/context";
 import { validateSession } from "@/lib/auth/actions";
+import {useTransition} from "react";
 
 
 
@@ -30,7 +31,7 @@ export default function CreateForm() {
             content: "",
             excerpt: "",
             title: "",
-            featuredImage: null,
+            featuredImage: undefined,
         }
     })
     const onChangeFile = debounce(() => {
@@ -39,6 +40,7 @@ export default function CreateForm() {
 
     const { setError, handleSubmit, control, formState, register } = form
     const fileRef = register("featuredImage")
+    const [ongoing, startTransition] = useTransition()
     const onSubmit: SubmitHandler<CreateArticleSchema> = async ({ title, content, excerpt, featuredImage }) => {
         const validResult = await validateSession()
         if (validResult.error) {
@@ -50,11 +52,15 @@ export default function CreateForm() {
             router.push("/")
             return;
         }
+        const formData = new FormData()
+        if (featuredImage) {
+            formData.set("file", featuredImage[0])
+        }
         const createResult = await createArticle({
             title,
             content,
             excerpt,
-            featuredImage: featuredImage,
+            featuredImage: featuredImage? formData : undefined,
             userId: validResult.payload.id,
         })
         if (createResult.error) {

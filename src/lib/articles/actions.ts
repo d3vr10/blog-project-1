@@ -12,7 +12,7 @@ export async function createArticle(values: {
     title: string,
     content: string,
     excerpt: string,
-    featuredImage?: FileList,
+    featuredImage?: FormData,
     userId: string,
 }) {
     try {
