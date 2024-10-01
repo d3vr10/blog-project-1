@@ -6,6 +6,7 @@ import { useAuth } from "./auth/context";
 import Link from "next/link";
 import { logout } from "@/lib/auth/actions";
 
+
 export default function NavbarUserPopover() {
     const { auth, setAuth } = useAuth()
     const handleLogout = async () => {

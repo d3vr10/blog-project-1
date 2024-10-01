@@ -20,16 +20,16 @@ import { validateSession } from "@/lib/auth/actions";
 
 
 
-export default function CreateForm() {
+export default function EditForm({ title, excerpt, content }: { title: string; excerpt: string, content: string }) {
     const router = useRouter()
     const { toast } = useToast()
     const form = useForm<CreateArticleSchema>({
         mode: "all",
         resolver: zodResolver(createSchema),
         defaultValues: {
-            content: "",
-            excerpt: "",
-            title: "",
+            content: content,
+            excerpt: excerpt,
+            title: title,
             featuredImageURL: "",
         }
     })
@@ -48,17 +48,16 @@ export default function CreateForm() {
             router.push("/")
             return;
         }
-        const createResult = await createArticle({
+        const editResult = await editArticle({
             title,
             content,
             excerpt,
             featuredImageURL,
-            userId: validResult.payload.id,
         })
-        if (createResult.error) {
+        if (editResult.error) {
             let title = "Unknown Error"
             let message = "unknown error"
-            if (createResult.status === 409) {
+            if (editResult.status === 409) {
                 message = "An article with this title already exists"
             }
 
@@ -71,10 +70,10 @@ export default function CreateForm() {
             return;
         }
 
-    
+
         toast({
             title: "Success",
-            description: "New article has been created",
+            description: "Article has been updated",
         })
         router.push("/")
 

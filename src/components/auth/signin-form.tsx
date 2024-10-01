@@ -55,7 +55,7 @@ export default function SigninForm() {
             return;
         }
 
-        auth.setAuth(response.payload)
+        auth.setAuth(state => ({ ...state, auth: response.payload  }))
         toast({
             title: "Success",
             description: "You have been authenticated",
@@ -105,7 +105,7 @@ export default function SigninForm() {
                 <Button className="flex gap-x-2"><Image width={30} height={30} className="h-full w-auto" alt="Google brand icon" src={"/icons/google/logo.png"} />Google</Button>
                 <Button className="flex gap-x-2"><Image width={30} height={30} className="h-full w-auto" alt="X brand icon" src={"/icons/x/logo-black.png"} />Twitter</Button>
                 <div className="text-sm text-center">
-                    <span>Don't have an account? <Link className="text-blue-400 font-bold" href={"/auth/signup"}>Sign up</Link></span>
+                    <span>Don&apos;t have an account? <Link className="text-blue-400 font-bold" href={"/auth/signup"}>Sign up</Link></span>
                 </div>
             </form>
 

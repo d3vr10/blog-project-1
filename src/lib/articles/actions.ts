@@ -72,3 +72,12 @@ export async function deleteArticle(slug: string) {
     }
 
 }
+
+export async function editArticle(values: { title: string, content: string, excerpt: string, featuredImageURL?: string }) {
+    const { title, content, excerpt, featuredImageURL } = createSchema.parse(values)
+    try {
+        const articles = await db.update(articleSchema)
+            .set({title: title, content: content, excerpt: excerpt, featuredImageURL: featuredImageURL})
+            .where(eq(slug))
+    }
+}

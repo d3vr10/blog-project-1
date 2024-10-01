@@ -8,6 +8,7 @@ import { Pencil, Trash } from "lucide-react";
 import { type PaginatedResult } from "@/lib/db/utils";
 import { useState } from "react";
 import { useAuth } from "../auth/context";
+import Link from "next/link";
 
 export default function ArticleTable({ page: initialPage }: { page: PaginatedResult }) {
     const { toast } = useToast()
@@ -50,7 +51,8 @@ export default function ArticleTable({ page: initialPage }: { page: PaginatedRes
                         <TableCell>{joinRows.article.visible}</TableCell>
                         <TableCell>{joinRows.article.visible}</TableCell>
                         <TableCell className="text-right">{joinRows.user.username}</TableCell>
-                        <TableCell className="text-right"><Button><Pencil /></Button></TableCell>
+                        <TableCell className="text-right"><Link href={`/articles/edit/${joinRows.article.slug}`}><Button><Pencil /></Button></Link></TableCell>
+
                         <TableCell className="text-right"><Button onClick={() => handleDelete(joinRows.article.slug)}><Trash /></Button></TableCell>
 
                     </TableRow>

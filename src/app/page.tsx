@@ -4,6 +4,7 @@ import db from "@/lib/db";
 import Link from "next/link";
 export default async function Home() {
   const articles = await db.query.articleSchema.findMany()
+
   return (
     <div className="grid lg:grid-cols-3 gap-6">
       {articles.map((article) => (

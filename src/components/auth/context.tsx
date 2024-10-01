@@ -1,7 +1,7 @@
 "use client";
 
 import { validateSession } from "@/lib/auth/actions";
-import { createContext, useContext, useEffect, useState } from "react";
+import React, { createContext, useContext, useEffect, useState } from "react";
 
 const initialValue = undefined
 
