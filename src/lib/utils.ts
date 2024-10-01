@@ -17,3 +17,15 @@ export function slugify(title: string) {
       .replace(/^-+/, '') // Trim - from start of text
       .replace(/-+$/, ''); // Trim - from end of text
 }
+
+export function objectsKeyIntersectionDiff(object1: any, object2: any) {
+  const diff: any = {}
+  Object.keys(object1).forEach(key => {
+   if (object1[key] !== object2[key]) {
+     diff[key] = [object1[key], object2[key]];
+   }
+  })
+  if (Object.keys(diff).length === 0)
+    return null
+  return diff
+}

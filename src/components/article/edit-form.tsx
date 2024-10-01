@@ -17,27 +17,29 @@ import { debounce, throttle } from "lodash"
 import { ToastAction } from "@radix-ui/react-toast";
 import { useAuth } from "../auth/context";
 import { validateSession } from "@/lib/auth/actions";
+import {objectsKeyIntersectionDiff} from "@/lib/utils";
 
 
 
 export default function EditForm({ title, excerpt, content, slug }: { title: string; excerpt: string, content: string, slug: string }) {
     const router = useRouter()
     const { toast } = useToast()
+    const defaultValues = {
+        content: content,
+        excerpt: excerpt,
+        title: title,
+        featuredImage: "",
+    }
     const form = useForm<CreateArticleSchema>({
         mode: "all",
         resolver: zodResolver(createSchema),
-        defaultValues: {
-            content: content,
-            excerpt: excerpt,
-            title: title,
-            featuredImageURL: "",
-        }
+        defaultValues: defaultValues,
     })
     const onChangeFile = debounce(() => {
 
     }, 5000, { leading: true })
-    const { setError, handleSubmit, control, formState } = form
-    const onSubmit: SubmitHandler<CreateArticleSchema> = async ({ title, content, excerpt, featuredImageURL }) => {
+    const { setError, handleSubmit, control, formState, } = form
+    const onSubmit: SubmitHandler<CreateArticleSchema> = async (values) => {
         const validResult = await validateSession()
         if (validResult.error) {
             toast({
@@ -48,29 +50,26 @@ export default function EditForm({ title, excerpt, content, slug }: { title: str
             router.push("/")
             return;
         }
-        const editResult = await editArticle({
-            title,
-            content,
-            excerpt,
-            featuredImageURL,
-            slug,
-        })
-        if (editResult.error) {
-            let title = "Unknown Error"
-            let message = "unknown error"
-            if (editResult.status === 409) {
-                message = "An article with this title already exists"
+
+        //Optimistic check on which values changed from the default ones.
+        if (objectsKeyIntersectionDiff(defaultValues, values)) {
+            const editResult = await editArticle({...values, slug: slug});
+            if (editResult.error) {
+                let title = "Unknown Error"
+                let message = "unknown error"
+                if (editResult.status === 409) {
+                    message = "An article with this title already exists"
+                }
+
+                setError("root", {message: message})
+                toast({
+                    title: title,
+                    description: message ? message : undefined,
+                    variant: "destructive",
+                })
+                return;
             }
-
-            setError("root", { message: message })
-            toast({
-                title: title,
-                description: message? message : undefined,
-                variant: "destructive",
-            })
-            return;
         }
-
 
         toast({
             title: "Success",
@@ -103,7 +102,7 @@ export default function EditForm({ title, excerpt, content, slug }: { title: str
                         </FormControl>
                         {
                             error
-                                ? (<FormDescription>Title of the article</FormDescription>)
+                                ? (<FormDescription>Excerpt of the article</FormDescription>)
                                 : <FormMessage />
                         }
                     </FormItem>
@@ -121,15 +120,15 @@ export default function EditForm({ title, excerpt, content, slug }: { title: str
                         }
                     </FormItem>
                 } />
-                <FormField control={control} name="featuredImageURL" render={({ field, fieldState: { error } }) =>
+                <FormField control={control} name="featuredImage" render={({ field, fieldState: { error } }) =>
                     <FormItem>
-                        <FormLabel>{field.name[0].toUpperCase() + field.name.substring(1)}</FormLabel>
+                        <FormLabel>Imagen de Portada</FormLabel>
                         <FormControl>
-                            <Input type="file" {...field} />
+                            <Input type="file" accept={".jpg,.jpeg,.png"} {...field} />
                         </FormControl>
                         {
                             error
-                                ? (<FormDescription>Title of the article</FormDescription>)
+                                ? (<FormDescription>Imagen de Portada</FormDescription>)
                                 : <FormMessage />
                         }
                     </FormItem>
@@ -139,7 +138,7 @@ export default function EditForm({ title, excerpt, content, slug }: { title: str
                         title: "",
                         content: "",
                         excerpt: "",
-                        featuredImageURL: "",
+                        featuredImage: null,
                     })}>Clear</Button>
                     <LoaderSubmitButton isSubmitting={formState.isSubmitting} />
                 </div>

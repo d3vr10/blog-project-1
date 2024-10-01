@@ -14,6 +14,7 @@ import { signIn } from "@/lib/auth/actions";
 import { useToast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
 import { useAuth } from "./context";
+import {Dispatch} from "react";
 
 const authSchema = z.object({
     username: z.string().min(4),
@@ -22,7 +23,7 @@ const authSchema = z.object({
 
 type AuthSchemaType = z.infer<typeof authSchema>
 
-export default function SigninForm() {
+export default function SigninForm({ setOpen }: { setOpen: Dispatch<any>}) {
     const auth = useAuth()
     const router = useRouter()
     const { toast } = useToast()
@@ -60,6 +61,7 @@ export default function SigninForm() {
             title: "Success",
             description: "You have been authenticated",
         })
+        setOpen(false)
         router.push("/")
     }
     return (
@@ -105,7 +107,8 @@ export default function SigninForm() {
                 <Button className="flex gap-x-2"><Image width={30} height={30} className="h-full w-auto" alt="Google brand icon" src={"/icons/google/logo.png"} />Google</Button>
                 <Button className="flex gap-x-2"><Image width={30} height={30} className="h-full w-auto" alt="X brand icon" src={"/icons/x/logo-black.png"} />Twitter</Button>
                 <div className="text-sm text-center">
-                    <span>Don&apos;t have an account? <Link className="text-blue-400 font-bold" href={"/auth/signup"}>Sign up</Link></span>
+                    <span>Don&apos;t have an account? <Link onClick={() => setOpen(false)} className="text-blue-400 font-bold" href={"/auth/signup"}>Sign up</Link></span>
+
                 </div>
             </form>
 

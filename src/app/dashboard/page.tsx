@@ -6,7 +6,8 @@ import db from "@/lib/db";
 import { articleSchema, userSchema } from "@/lib/db/schemas";
 import { paginate } from "@/lib/db/utils";
 import { eq } from "drizzle-orm";
-import { Trash, Pencil } from "lucide-react"
+import { Trash, Pencil, PlusSquare, Square, Plus } from "lucide-react"
+import Link from "next/link"
 
 export default async function Page(params: any) {
     const query = db
@@ -15,7 +16,13 @@ export default async function Page(params: any) {
         .innerJoin(userSchema, eq(articleSchema.userId, userSchema.id))
     const page = await paginate(query.$dynamic(), 1, 10, articleSchema.id)
     return (
+       <div>
+           <div className={"flex justify-end mb-4"}>
+           <Link href={"/dashboard/create"}><Button><Plus/></Button></Link>
+           </div>
         <ArticleTable page={page} />
+       </div>
+
 
     )
 }

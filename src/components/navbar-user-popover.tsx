@@ -5,16 +5,19 @@ import { User2, Book, LogOut as LogOutIcon, ChartBar, ChartArea, ChartBarIncreas
 import { useAuth } from "./auth/context";
 import Link from "next/link";
 import { logout } from "@/lib/auth/actions";
+import {useState} from "react";
 
 
 export default function NavbarUserPopover() {
+    const [ open, setOpen ] = useState(false);
     const { auth, setAuth } = useAuth()
     const handleLogout = async () => {
         await logout()
         setAuth((state: any) => ({ setAuth, auth: undefined }))
+        setOpen(false);
     }
     return (
-        <Popover>
+        <Popover open={open} onOpenChange={() => setOpen((state) => !state)}>
             <PopoverTrigger asChild>
                 <Button variant="outline" className="flex gap-x-1 items-center"><User2 />{auth.username}</Button>
             </PopoverTrigger>
@@ -28,7 +31,7 @@ export default function NavbarUserPopover() {
                     </div>
                     <div className="flex flex-col gap-y-3 [&_button]:flex [&_button]:gap-x-2 [&_button]:justify-start">
 
-                        <Link className="flex items-center gap-x-4 grid" href={"/dashboard"}><Button className="">
+                        <Link onClick={() => setOpen(false)} className="flex items-center gap-x-4 grid" href={"/dashboard"}><Button className="">
                             <ChartBarIncreasing /><span>Dashboard</span>
                         </Button></Link>
                         <Button className=" " onClick={ handleLogout}><LogOutIcon />Logout</Button>

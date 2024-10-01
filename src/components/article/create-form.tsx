@@ -30,14 +30,16 @@ export default function CreateForm() {
             content: "",
             excerpt: "",
             title: "",
-            featuredImageURL: "",
+            featuredImage: null,
         }
     })
     const onChangeFile = debounce(() => {
 
     }, 5000, { leading: true })
-    const { setError, handleSubmit, control, formState } = form
-    const onSubmit: SubmitHandler<CreateArticleSchema> = async ({ title, content, excerpt, featuredImageURL }) => {
+
+    const { setError, handleSubmit, control, formState, register } = form
+    const fileRef = register("featuredImage")
+    const onSubmit: SubmitHandler<CreateArticleSchema> = async ({ title, content, excerpt, featuredImage }) => {
         const validResult = await validateSession()
         if (validResult.error) {
             toast({
@@ -52,7 +54,7 @@ export default function CreateForm() {
             title,
             content,
             excerpt,
-            featuredImageURL,
+            featuredImage: featuredImage,
             userId: validResult.payload.id,
         })
         if (createResult.error) {
@@ -103,7 +105,7 @@ export default function CreateForm() {
                         </FormControl>
                         {
                             error
-                                ? (<FormDescription>Title of the article</FormDescription>)
+                                ? (<FormDescription>Excerpt of the article</FormDescription>)
                                 : <FormMessage />
                         }
                     </FormItem>
@@ -121,17 +123,18 @@ export default function CreateForm() {
                         }
                     </FormItem>
                 } />
-                <FormField control={control} name="featuredImageURL" render={({ field, fieldState: { error } }) =>
+                <FormField control={control} name="featuredImage" render={({ field, fieldState: { error } }) =>
                     <FormItem>
-                        <FormLabel>{field.name[0].toUpperCase() + field.name.substring(1)}</FormLabel>
+                        <FormLabel>Imagen de Portada</FormLabel>
                         <FormControl>
-                            <Input type="file" {...field} />
+                            <Input type="file" accept={".jpg,.jpeg,.png"} {...fileRef} />
                         </FormControl>
-                        {
-                            error
-                                ? (<FormDescription>Title of the article</FormDescription>)
-                                : <FormMessage />
-                        }
+                        {/*{*/}
+                        {/*    error*/}
+                        {/*        ? (<FormDescription>Portrait of the article</FormDescription>)*/}
+                        {/*        : <FormMessage />*/}
+                        {/*}*/}
+                        <FormMessage />
                     </FormItem>
                 } />
                 <div className="flex justify-end gap-x-4">
@@ -139,7 +142,7 @@ export default function CreateForm() {
                         title: "",
                         content: "",
                         excerpt: "",
-                        featuredImageURL: "",
+                        featuredImage: null,
                     })}>Clear</Button>
                     <LoaderSubmitButton isSubmitting={formState.isSubmitting} />
                 </div>

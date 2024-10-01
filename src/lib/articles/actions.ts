@@ -12,16 +12,16 @@ export async function createArticle(values: {
     title: string,
     content: string,
     excerpt: string,
-    featuredImageURL?: string,
+    featuredImage?: FileList,
     userId: string,
 }) {
     try {
-        const { title, content, excerpt, featuredImageURL } = createSchema.parse(values)
+        const { title, content, excerpt, featuredImage } = createSchema.parse(values)
         await db.insert(articleSchema).values({
             title,
             content,
             excerpt,
-            featuredImageURL,
+            featuredImage: featuredImage[0],
             slug: slugify(title),
             userId: values.userId,
         })
@@ -74,11 +74,11 @@ export async function deleteArticle(slug: string) {
 
 }
 
-export async function editArticle(values: { title: string, content: string, excerpt: string, featuredImageURL?: string, slug: string }) {
-    const { title, content, excerpt, featuredImageURL } = createSchema.parse(values)
+export async function editArticle(values: { title: string, content: string, excerpt: string, featuredImage?: string, slug: string }) {
+    const { title, content, excerpt, featuredImage } = createSchema.parse(values)
     try {
         const article = await db.update(articleSchema)
-            .set({title: title, content: content, excerpt: excerpt, featuredImageURL: featuredImageURL})
+            .set({title: title, content: content, excerpt: excerpt, featuredImage: featuredImage})
             .where(eq(articleSchema.slug, values.slug))
             .returning()
         if (!article) {

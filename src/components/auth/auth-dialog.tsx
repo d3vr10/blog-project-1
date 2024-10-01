@@ -13,10 +13,12 @@ import {
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import SigninForm from "./signin-form";
+import {useState} from "react";
 
 export function AuthDialog() {
+  const [open, setOpen] = useState(false);
   return (
-    <Dialog>
+    <Dialog onOpenChange={ () => setOpen((state) => !state) } open={open}>
       <DialogTrigger asChild>
         <Button variant="outline">Login</Button>
       </DialogTrigger>
@@ -25,11 +27,8 @@ export function AuthDialog() {
           <DialogTitle>Who are you?</DialogTitle>
         </DialogHeader>
         <div className="grid gap-4 py-4">
-          <SigninForm />
+          <SigninForm setOpen={setOpen} />
         </div>
-        <DialogFooter>
-          <Button type="submit">Save changes</Button>
-        </DialogFooter>
       </DialogContent>
     </Dialog>
   )
