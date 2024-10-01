@@ -6,6 +6,7 @@ import db from "../db";
 import { articleSchema } from "../db/schemas";
 import { createSchema } from "../schemas/article";
 import { slugify } from "../utils";
+import {notFound} from "next/navigation";
 
 export async function createArticle(values: {
     title: string,
@@ -73,11 +74,31 @@ export async function deleteArticle(slug: string) {
 
 }
 
-export async function editArticle(values: { title: string, content: string, excerpt: string, featuredImageURL?: string }) {
+export async function editArticle(values: { title: string, content: string, excerpt: string, featuredImageURL?: string, slug: string }) {
     const { title, content, excerpt, featuredImageURL } = createSchema.parse(values)
     try {
-        const articles = await db.update(articleSchema)
+        const article = await db.update(articleSchema)
             .set({title: title, content: content, excerpt: excerpt, featuredImageURL: featuredImageURL})
-            .where(eq(slug))
+            .where(eq(articleSchema.slug, values.slug))
+            .returning()
+        if (!article) {
+            return {
+                status: 404,
+                error: {
+                    message: "Not found article"
+                },
+            }
+        }
+        return {
+            status: 200,
+            message: "Updated article"
+        }
+    } catch(err: any){
+        return {
+            status: 500,
+            error: {
+                message: "Unknown error"
+            }
+        }
     }
 }

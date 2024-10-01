@@ -10,7 +10,7 @@ import clsx from "clsx";
 import LoaderSubmitButton from "../loader-submit-button";
 import { useRouter } from "next/navigation";
 import { CreateArticleSchema, createSchema } from "@/lib/schemas/article";
-import { createArticle } from "@/lib/articles/actions";
+import { editArticle } from "@/lib/articles/actions";
 import { useToast } from "@/hooks/use-toast";
 import { debounce, throttle } from "lodash"
 
@@ -20,7 +20,7 @@ import { validateSession } from "@/lib/auth/actions";
 
 
 
-export default function EditForm({ title, excerpt, content }: { title: string; excerpt: string, content: string }) {
+export default function EditForm({ title, excerpt, content, slug }: { title: string; excerpt: string, content: string, slug: string }) {
     const router = useRouter()
     const { toast } = useToast()
     const form = useForm<CreateArticleSchema>({
@@ -53,6 +53,7 @@ export default function EditForm({ title, excerpt, content }: { title: string; e
             content,
             excerpt,
             featuredImageURL,
+            slug,
         })
         if (editResult.error) {
             let title = "Unknown Error"
