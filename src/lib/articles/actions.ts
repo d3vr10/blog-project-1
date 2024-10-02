@@ -4,9 +4,8 @@
 import { eq } from "drizzle-orm";
 import db from "../db";
 import { articleSchema } from "../db/schemas";
-import { createSchema } from "../schemas/article";
+import { createSchemaServer } from "../schemas/article";
 import { slugify } from "../utils";
-import {notFound} from "next/navigation";
 
 export async function createArticle(values: {
     title: string,
@@ -16,12 +15,12 @@ export async function createArticle(values: {
     userId: string,
 }) {
     try {
-        const { title, content, excerpt, featuredImage } = createSchema.parse(values)
+        const { title, content, excerpt, featuredImage } = createSchemaServer.parse(values)
         await db.insert(articleSchema).values({
             title,
             content,
             excerpt,
-            featuredImage: featuredImage[0],
+            featuredImage: featuredImage,
             slug: slugify(title),
             userId: values.userId,
         })

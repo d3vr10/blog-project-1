@@ -9,7 +9,11 @@ import { Button } from "../ui/button";
 import clsx from "clsx";
 import LoaderSubmitButton from "../loader-submit-button";
 import { useRouter } from "next/navigation";
-import { CreateArticleSchema, createSchema } from "@/lib/schemas/article";
+import {
+    CreateArticleSchemaClient,
+    CreateArticleSchemaServer,
+    createSchemaClient,
+} from "@/lib/schemas/article";
 import { createArticle } from "@/lib/articles/actions";
 import { useToast } from "@/hooks/use-toast";
 import { debounce, throttle } from "lodash"
@@ -24,9 +28,9 @@ import {useTransition} from "react";
 export default function CreateForm() {
     const router = useRouter()
     const { toast } = useToast()
-    const form = useForm<CreateArticleSchema>({
+    const form = useForm<CreateArticleSchemaServer>({
         mode: "all",
-        resolver: zodResolver(createSchema),
+        resolver: zodResolver(createSchemaClient),
         defaultValues: {
             content: "",
             excerpt: "",
@@ -41,7 +45,7 @@ export default function CreateForm() {
     const { setError, handleSubmit, control, formState, register } = form
     const fileRef = register("featuredImage")
     const [ongoing, startTransition] = useTransition()
-    const onSubmit: SubmitHandler<CreateArticleSchema> = async ({ title, content, excerpt, featuredImage }) => {
+    const onSubmit: SubmitHandler<CreateArticleSchemaClient> = async ({ title, content, excerpt, featuredImage }) => {
         const validResult = await validateSession()
         if (validResult.error) {
             toast({
@@ -54,13 +58,13 @@ export default function CreateForm() {
         }
         const formData = new FormData()
         if (featuredImage) {
-            formData.set("file", featuredImage[0])
+            formData.set("file", featuredImage)
         }
         const createResult = await createArticle({
             title,
             content,
             excerpt,
-            featuredImage: featuredImage? formData : undefined,
+            featuredImage: formData,
             userId: validResult.payload.id,
         })
         if (createResult.error) {
