@@ -40,3 +40,6 @@ next-env.d.ts
 
 #SQLITE DB
 /sqlite.db
+
+#Article images dir
+/articlesData

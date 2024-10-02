@@ -33,30 +33,34 @@ export default function ArticleTable({ page: initialPage }: { page: PaginatedRes
             variant: "default",
         })
     }
+
     return (
         <Table>
-            <TableCaption>A list of your recent invoices.</TableCaption>
+            <TableCaption>A list of all articles</TableCaption>
             <TableHeader>
                 <TableRow>
-                    <TableHead className="w-[100px]">Invoice</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead>Method</TableHead>
-                    <TableHead className="text-right">Amount</TableHead>
+                    <TableHead>Created At</TableHead>
+                    <TableHead className="w-[100px]">Title</TableHead>
+                    <TableHead>Author</TableHead>
+                    <TableHead className="text-right">Visible</TableHead>
                 </TableRow>
             </TableHeader>
             <TableBody>
-                {page.items.map((joinRows) => (
+                {page.items.map((joinRows) => {
+                    const date = new Date(joinRows.article.createdAt)
+                    const formattedDate = `${date.getDate()}-${date.getMonth()}-${date.getFullYear()}`
+                    return (
                     <TableRow key={joinRows.article.id}>
-                        <TableCell className="font-medium">{joinRows.article.title}</TableCell>
-                        <TableCell>{joinRows.article.visible}</TableCell>
-                        <TableCell>{joinRows.article.visible}</TableCell>
-                        <TableCell className="text-right">{joinRows.user.username}</TableCell>
+                        <TableCell className="font-medium">{formattedDate}</TableCell>
+                        <TableCell>{joinRows.article.title}</TableCell>
+                        <TableCell>{joinRows.user.username}</TableCell>
+                        <TableCell className="text-right">{String(joinRows.article.visible)}</TableCell>
                         <TableCell className="text-right"><Link href={`/articles/edit/${joinRows.article.slug}`}><Button><Pencil /></Button></Link></TableCell>
 
                         <TableCell className="text-right"><Button onClick={() => handleDelete(joinRows.article.slug)}><Trash /></Button></TableCell>
 
                     </TableRow>
-                ))}
+                )})}
 
             </TableBody>
         </Table >

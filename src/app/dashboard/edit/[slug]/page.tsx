@@ -12,7 +12,7 @@ export default async function Page({ params: { slug}}: { params: {slug: string} 
         notFound()
     }
     return (
-        <EditForm title={article.title} content={article.content} excerpt={article.excerpt} slug={slug}/>
+        <EditForm title={article.title} content={article.content} excerpt={article.excerpt} featuredImage={article.featuredImage} slug={slug}/>
     )
 
 }

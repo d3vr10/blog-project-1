@@ -29,9 +29,9 @@ export function withContext(
     middleware: (
         req: NextRequest,
         setContext: (key: string, value: string) => void,
-    ) => void | NextResponse,
+    ) => Promise<void | NextResponse> | void | NextResponse,
 ) {
-    let contextItems = []
+    const contextItems: string[] = []
     for (const key of allowedRawKeys) {
         contextItems.push(normalizeRawKey(key))
     }

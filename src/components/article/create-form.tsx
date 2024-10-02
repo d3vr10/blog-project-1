@@ -89,6 +89,7 @@ export default function CreateForm() {
             description: "New article has been created",
         })
         router.push("/")
+        router.refresh()
 
     }
     return (

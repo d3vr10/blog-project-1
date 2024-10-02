@@ -6,6 +6,7 @@ import db from "../db";
 import { articleSchema } from "../db/schemas";
 import { createSchemaServer } from "../schemas/article";
 import { slugify } from "../utils";
+import {removeFileContents, retrieveFileContents, storeFile} from "@/lib/fs/file-storage";
 
 export async function createArticle(values: {
     title: string,
@@ -16,11 +17,15 @@ export async function createArticle(values: {
 }) {
     try {
         const { title, content, excerpt, featuredImage } = createSchemaServer.parse(values)
+        let path = undefined
+        if (featuredImage) {
+            path = await storeFile(featuredImage)
+        }
         await db.insert(articleSchema).values({
             title,
             content,
             excerpt,
-            featuredImage: featuredImage,
+            featuredImage: path,
             slug: slugify(title),
             userId: values.userId,
         })
@@ -73,21 +78,35 @@ export async function deleteArticle(slug: string) {
 
 }
 
-export async function editArticle(values: { title: string, content: string, excerpt: string, featuredImage?: string, slug: string }) {
-    const { title, content, excerpt, featuredImage } = createSchema.parse(values)
+export async function editArticle(values: { title: string, content: string, excerpt: string, featuredImage?: FormData, slug: string }) {
+    const { title, content, excerpt, featuredImage } = createSchemaServer.parse(values)
     try {
-        const article = await db.update(articleSchema)
-            .set({title: title, content: content, excerpt: excerpt, featuredImage: featuredImage})
-            .where(eq(articleSchema.slug, values.slug))
-            .returning()
-        if (!article) {
+        const oldArticle = await db.query.articleSchema.findFirst({
+            columns: {
+                id: true,
+                slug: true,
+                featuredImage: true,
+            },
+            where: eq(articleSchema.slug, values.slug)
+        })
+        if (!oldArticle) {
             return {
                 status: 404,
                 error: {
-                    message: "Not found article"
-                },
+                    message: "Article not found!"
+                }
             }
         }
+        if (oldArticle && oldArticle.featuredImage)
+            removeFileContents(oldArticle.featuredImage)
+        let path = undefined
+        if (featuredImage) {
+            path = await storeFile(featuredImage)
+        }
+        const article = await db.update(articleSchema)
+            .set({title: title, content: content, excerpt: excerpt, featuredImage: path})
+            .where(eq(articleSchema.slug, values.slug))
+            .returning()
         return {
             status: 200,
             message: "Updated article"
@@ -100,4 +119,38 @@ export async function editArticle(values: { title: string, content: string, exce
             }
         }
     }
+}
+
+
+export async function retrieveFeaturedImage(slug: string) {
+    const article = await db.query.articleSchema.findFirst({
+        where: eq(articleSchema.slug, slug),
+        columns: {
+            featuredImage: true,
+        }
+    })
+
+    if (article?.featuredImage) {
+        const formData = new FormData()
+        try {
+            const data = retrieveFileContents(article.featuredImage)
+            formData.set("file", new Blob([data]))
+            return formData
+        } catch (err: any) {
+            return {
+                status: 500,
+                error: {
+                    message: "File doesn't exist or there is insufficient permissions to read it"
+                }
+            }
+        }
+    }
+
+    return {
+        status: 404,
+        error: {
+            message: "Image was not found"
+        }
+    }
+
 }
