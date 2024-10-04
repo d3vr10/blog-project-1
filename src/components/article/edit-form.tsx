@@ -34,7 +34,7 @@ export default function EditForm(
         excerpt: string,
         content: string,
         slug: string,
-        featuredImage?: string | null
+        featuredImage?: { name: string, base64Contents: string },
     }
 ) {
     const router = useRouter()
