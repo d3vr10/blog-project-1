@@ -3,13 +3,13 @@
 import { type SubmitHandler, useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod"
-import { Form, FormField, FormControl, FormDescription, FormItem, FormLabel, FormMessage } from "../ui/form";
-import { Input } from "../ui/input";
-import { Button } from "../ui/button";
-import { GitHubIcon, GoogleIcon } from "../icons";
+import { Form, FormField, FormControl, FormDescription, FormItem, FormLabel, FormMessage } from "../../../components/ui/form";
+import { Input } from "../../../components/ui/input";
+import { Button } from "../../../components/ui/button";
+import { GitHubIcon, GoogleIcon } from "../../../components/icons";
 import Image from "next/image"
 import Link from "next/link";
-import LoaderSubmitButton from "../loader-submit-button";
+import LoaderSubmitButton from "../../../components/loader-submit-button";
 import { signIn } from "@/lib/auth/actions";
 import { useToast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";

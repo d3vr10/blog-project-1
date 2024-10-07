@@ -1,4 +1,4 @@
-import CreateForm from "@/components/article/create-form";
+import CreateForm from "@/app/articles/_components/create-form";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
 export default async function Page() {

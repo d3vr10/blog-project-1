@@ -4,7 +4,7 @@
 import { eq } from "drizzle-orm";
 import db from "../db";
 import { articleSchema } from "../db/schemas";
-import { createSchemaServer } from "../schemas/article";
+import {createSchemaServer, editSchemaServer} from "../schemas/article";
 import { slugify } from "../utils";
 import {removeFileContents, retrieveFileContents, storeFile} from "@/lib/fs/file-storage";
 
@@ -78,8 +78,8 @@ export async function deleteArticle(slug: string) {
 
 }
 
-export async function editArticle(values: { title: string, content: string, excerpt: string, featuredImage?: FormData, slug: string }) {
-    const { title, content, excerpt, featuredImage } = createSchemaServer.parse(values)
+export async function editArticle(values: { title: string, content: string, excerpt: string, featuredImage?: FormData | null | undefined, slug: string }) {
+    const { title, content, excerpt, featuredImage } = editSchemaServer.parse(values)
     try {
         const oldArticle = await db.query.articleSchema.findFirst({
             columns: {
@@ -97,14 +97,18 @@ export async function editArticle(values: { title: string, content: string, exce
                 }
             }
         }
-        if (oldArticle && oldArticle.featuredImage)
-            removeFileContents(oldArticle.featuredImage)
         let path = undefined
         if (featuredImage) {
             path = await storeFile(featuredImage)
+            if (oldArticle.featuredImage) {
+                removeFileContents(oldArticle.featuredImage)
+            }
+        } else if (featuredImage === null && oldArticle.featuredImage) {
+            path = null
+            await removeFileContents(oldArticle.featuredImage)
         }
         const article = await db.update(articleSchema)
-            .set({title: title, content: content, excerpt: excerpt, featuredImage: path})
+            .set({title: title, content: content, excerpt: excerpt, featuredImage: path, slug: slugify(title)})
             .where(eq(articleSchema.slug, values.slug))
             .returning()
         return {

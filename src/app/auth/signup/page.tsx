@@ -1,4 +1,4 @@
-import SignupForm from "@/components/auth/signup-form";
+import SignupForm from "@/app/auth/_components/signup-form";
 import { Card, CardHeader, CardTitle,CardDescription, CardContent } from "@/components/ui/card";
 
 export default async function Page() {

@@ -4,8 +4,8 @@ import {v7} from "uuid";
 
 export async function storeFile(file: File) {
     const data = await file.arrayBuffer()
-    const parentDir = path.join(process.cwd(), "articlesData")
-    const filePath = path.join(parentDir, v7() + `.${file.type.split("/")[1]}`)
+    const parentDir = path.join(process.cwd(), "articlesData", v7())
+    const filePath = path.join(parentDir, file.name + `.${file.type.split("/")[1]}`)
     try {
         fs.mkdirSync(parentDir, { recursive: true })
         fs.writeFileSync(filePath, new Uint8Array(data));
@@ -17,8 +17,7 @@ export async function storeFile(file: File) {
 }
 
 export  function retrieveFileContents(filePath: string){
-   const data = fs.readFileSync(filePath)
-    return data
+    return fs.readFileSync(filePath)
 }
 
 export function removeFileContents(filePath: string){

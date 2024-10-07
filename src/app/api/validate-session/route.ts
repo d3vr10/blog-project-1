@@ -1,8 +1,8 @@
 import {NextApiRequest} from "next";
 import {validateSession} from "@/lib/auth/actions";
-import {NextResponse} from "next/server";
+import {NextRequest, NextResponse} from "next/server";
 
-export async function PUT (req: NextApiRequest) {
+export async function PUT (req: NextRequest) {
     const result = await validateSession()
     return NextResponse.json(result, {status: result.status})
 }

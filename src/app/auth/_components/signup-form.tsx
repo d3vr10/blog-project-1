@@ -3,10 +3,10 @@
 import { UserCreateType, userCreateSchema } from "@/lib/schemas/user";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "../ui/form";
-import { Input } from "../ui/input";
-import LoaderSubmitButton from "../loader-submit-button";
-import { Button } from "../ui/button";
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "../../../components/ui/form";
+import { Input } from "../../../components/ui/input";
+import LoaderSubmitButton from "../../../components/loader-submit-button";
+import { Button } from "../../../components/ui/button";
 import { signUp } from "@/lib/auth/actions";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";

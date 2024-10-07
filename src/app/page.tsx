@@ -1,28 +1,42 @@
-import Image from "next/image";
-import { Card, CardTitle, CardContent, CardHeader, CardDescription, CardFooter } from "@/components/ui/card";
 import db from "@/lib/db";
-import Link from "next/link";
+import {retrieveFileContents} from "@/lib/fs/file-storage";
+import path from "path";
+import {default as ArticleCard} from "@/components/testing2"
+
 export default async function Home() {
-  const articles = await db.query.articleSchema.findMany()
+    const articles = await db.query.articleSchema.findMany()
 
-  return (
-    <div className="grid lg:grid-cols-3 gap-6">
-      {articles.map((article) => (
+    return (
+        <div className="grid lg:grid-cols-3 gap-6">
+            {articles.map((article) => {
+                const encodedArticle: Omit<typeof article, "featuredImage"> & {
+                    featuredImage?: {
+                        name: string,
+                        byteString: string,
+                        mimeType: string,
+                    }
+                } = {...article, featuredImage: undefined}
+                if (article.featuredImage) {
+                    const binary = retrieveFileContents(article.featuredImage)
+                    const base64Encoded = Buffer.from(binary).toString("base64")
 
-        <Card key={article.id}>
-          <CardHeader>
-            <Image src={"/images/not-found.jpg"} width={300} height={300} className="aspect-video object-cover w-full rounded-xl" alt="Article's Featured Image" />
-          </CardHeader>
-          <CardContent>
-            <Link href={`/articles/${article.slug}`}>
-              <CardTitle>{article.title}</CardTitle>
-            </Link>
-            <CardDescription>{article.excerpt}</CardDescription>
-          </CardContent>
-          <CardFooter>{new Date().toString()}</CardFooter>
-        </Card>
-      ))}
+                    encodedArticle.featuredImage = {
+                        name: path.basename(article.featuredImage),
+                        byteString: base64Encoded,
+                        mimeType: `image/${path.extname(article.featuredImage).slice(1)}`,
+                    }
 
-    </div>
-  );
+
+                }
+                return (
+                    <>
+                        <ArticleCard key={article.id} article={encodedArticle}/>
+                    </>
+                )
+            })
+            }
+
+
+        </div>
+    );
 }

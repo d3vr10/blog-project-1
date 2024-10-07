@@ -1,4 +1,4 @@
-import ArticleTable from "@/components/dashboard/article-table";
+import ArticleTable from "@/app/dashboard/_components/article-table";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/hooks/use-toast";
 import { deleteArticle } from "@/lib/articles/actions";
@@ -22,7 +22,5 @@ export default async function Page(params: any) {
            </div>
         <ArticleTable page={page} />
        </div>
-
-
     )
 }
