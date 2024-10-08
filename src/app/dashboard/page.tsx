@@ -1,12 +1,10 @@
 import ArticleTable from "@/app/dashboard/_components/article-table";
-import { Button } from "@/components/ui/button";
-import { toast } from "@/hooks/use-toast";
-import { deleteArticle } from "@/lib/articles/actions";
+import {Button} from "@/components/ui/button";
 import db from "@/lib/db";
-import { articleSchema, userSchema } from "@/lib/db/schemas";
-import {paginate, withPagination} from "@/lib/db/utils";
-import {desc, eq} from "drizzle-orm";
-import { Trash, Pencil, PlusSquare, Square, Plus } from "lucide-react"
+import {articleSchema, userSchema} from "@/lib/db/schemas";
+import {paginate} from "@/lib/db/utils";
+import {eq} from "drizzle-orm";
+import {Plus} from "lucide-react"
 import Link from "next/link"
 
 export default async function Page(params: any) {

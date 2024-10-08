@@ -1,15 +1,13 @@
 "use client";
 
-import { useToast } from "@/hooks/use-toast"
-import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { deleteArticle } from "@/lib/articles/actions";
-import { Button } from "../../../components/ui/button";
-import { Pencil, Trash } from "lucide-react";
-import { type PaginatedResult } from "@/lib/db/utils";
-import { useState } from "react";
-import { useAuth } from "@/app/auth/_components/context";
+import {useToast} from "@/hooks/use-toast"
+import {Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow} from "@/components/ui/table";
+import {deleteArticle} from "@/lib/articles/actions";
+import {Button} from "../../../components/ui/button";
+import {Pencil, Trash} from "lucide-react";
+import {type PaginatedResult} from "@/lib/db/utils";
+import {useState} from "react";
 import Link from "next/link";
-import {revalidatePathAction} from "@/app/testing/actions";
 import {useRouter} from "next/navigation";
 import {refreshArticles} from "@/app/actions";
 

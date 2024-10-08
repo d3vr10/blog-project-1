@@ -8,18 +8,18 @@ import {logout} from "@/lib/auth/actions";
 import {useState} from "react";
 
 
-export default function NavbarUserPopover() {
+export default function NavbarUserPopover(  ) {
     const [ open, setOpen ] = useState(false);
     const { auth, setAuth } = useAuth()
     const handleLogout = async () => {
         await logout()
-        setAuth((state: any) => ({ setAuth, auth: undefined }))
         setOpen(false);
+        setAuth((state: any) => ({ setAuth, auth: undefined }))
     }
     return (
         <Popover open={open} onOpenChange={() => setOpen((state) => !state)}>
-            <PopoverTrigger asChild>
-                <Button variant="outline" className="flex gap-x-1 items-center"><User2 />{auth.username}</Button>
+            <PopoverTrigger  asChild>
+                <Button variant="outline" className="w-[105.4px] flex gap-x-1 items-center"><User2 />{auth.username}</Button>
             </PopoverTrigger>
             <PopoverContent className="w-80">
                 <div className="grid gap-4">

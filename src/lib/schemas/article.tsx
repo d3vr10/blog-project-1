@@ -6,8 +6,9 @@ export const createSchemaClient = z.object({
     content: z.string().min(1),
     excerpt: z.string().min(1),
     featuredImage: z
-        .instanceof(FileList)
+        .unknown()
         .optional()
+        .transform((value) => value as FileList)
         .transform((value) => {
             if (value && value.length > 0)
                 return value[0] as File

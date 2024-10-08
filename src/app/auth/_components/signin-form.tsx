@@ -56,12 +56,12 @@ export default function SigninForm({ setOpen }: { setOpen: Dispatch<any>}) {
             return;
         }
 
+        setOpen(false)
         auth.setAuth(state => ({ ...state, auth: response.payload  }))
         toast({
             title: "Success",
             description: "You have been authenticated",
         })
-        setOpen(false)
         router.push("/")
     }
     return (

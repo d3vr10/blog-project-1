@@ -16,7 +16,7 @@ import {Textarea} from "../../../components/ui/textarea";
 import {Button} from "../../../components/ui/button";
 import LoaderSubmitButton from "../../../components/loader-submit-button";
 import {useRouter} from "next/navigation";
-import {CreateArticleSchemaClient, createSchemaClient, featuredImageSchemaClient,} from "@/lib/schemas/article";
+import {CreateArticleSchemaClient,} from "@/lib/schemas/article";
 import {createArticle} from "@/lib/articles/actions";
 import {useToast} from "@/hooks/use-toast";
 import {debounce} from "lodash"
@@ -24,8 +24,8 @@ import {debounce} from "lodash"
 import {validateSession} from "@/lib/auth/actions";
 import {useTransition} from "react";
 import {refreshArticles} from "@/app/actions";
-import Image from "next/image"
 import Previsualizer from "@/app/articles/_components/visualizer";
+import {createSchemaClient} from "@/lib/schemas//article";
 
 
 export default function CreateForm() {

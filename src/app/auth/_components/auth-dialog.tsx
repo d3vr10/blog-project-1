@@ -18,9 +18,9 @@ import {useState} from "react";
 export function AuthDialog() {
   const [open, setOpen] = useState(false);
   return (
-    <Dialog onOpenChange={ () => setOpen((state) => !state) } open={open}>
-      <DialogTrigger asChild>
-        <Button variant="outline">Login</Button>
+    <Dialog  onOpenChange={ () => setOpen((state) => !state) } open={open}>
+      <DialogTrigger asChild className={""}>
+        <Button variant="outline" className={"w-[105.4px] hover:bg-green-500 border-green-400"}>Sign In</Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>

@@ -15,16 +15,18 @@ export function useAuth() {
 }
 export default function AuthProvider({ children }: { children: React.ReactNode }) {
     const [auth, setAuth] = useState<any>(initialValue)
+    const [loading, setLoading] = useState<boolean>(true)
     useEffect(() => {
         (async () => {
             const result = await validateSession()
             if (!result.error) {
                 setAuth(result.payload)
             }
+            setLoading(false)
         })()
     }, [])
     return (
-        <AuthContext.Provider value={{ auth, setAuth }}>
+        <AuthContext.Provider value={{ auth, setAuth, loading }}>
             {children}
         </AuthContext.Provider>
     )
