@@ -16,7 +16,7 @@ import {Textarea} from "../../../components/ui/textarea";
 import {Button} from "../../../components/ui/button";
 import LoaderSubmitButton from "../../../components/loader-submit-button";
 import {useRouter} from "next/navigation";
-import {CreateArticleSchemaClient, createSchemaClient,} from "@/lib/schemas/article";
+import {CreateArticleSchemaClient, createSchemaClient, featuredImageSchemaClient,} from "@/lib/schemas/article";
 import {createArticle} from "@/lib/articles/actions";
 import {useToast} from "@/hooks/use-toast";
 import {debounce} from "lodash"
@@ -25,6 +25,7 @@ import {validateSession} from "@/lib/auth/actions";
 import {useTransition} from "react";
 import {refreshArticles} from "@/app/actions";
 import Image from "next/image"
+import Previsualizer from "@/app/articles/_components/visualizer";
 
 
 export default function CreateForm() {
@@ -43,10 +44,10 @@ export default function CreateForm() {
     const onChangeFile = debounce(() => {
 
     }, 5000, {leading: true})
-
-    const {getValues, setError, handleSubmit, control, formState, register, setValue} = form
+    const {getValues, watch, setError, handleSubmit, control, formState, register, setValue} = form
     const fileRef = register("featuredImage")
     const [ongoing, startTransition] = useTransition()
+
     const onSubmit: SubmitHandler<CreateArticleSchemaClient> = async ({title, content, excerpt, featuredImage}) => {
         const validResult = await validateSession()
         if (validResult.error) {
@@ -86,6 +87,7 @@ export default function CreateForm() {
         }
 
 
+
         toast({
             title: "Success",
             description: "New article has been created",
@@ -100,7 +102,7 @@ export default function CreateForm() {
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
                 <FormField control={control} name="title" render={({field, fieldState: {error}}) =>
                     <FormItem>
-                        <FormLabel>{field.name[0].toUpperCase() + field.name.substring(1)}</FormLabel>
+                        <FormLabel>Title</FormLabel>
                         <FormControl>
                             <Input type="text" {...field} />
                         </FormControl>
@@ -113,7 +115,7 @@ export default function CreateForm() {
                 }/>
                 <FormField control={control} name="excerpt" render={({field, fieldState: {error}}) =>
                     <FormItem>
-                        <FormLabel>{field.name[0].toUpperCase() + field.name.substring(1)}</FormLabel>
+                        <FormLabel>Excerpt</FormLabel>
                         <FormControl>
                             <Textarea {...field} />
                         </FormControl>
@@ -126,7 +128,7 @@ export default function CreateForm() {
                 }/>
                 <FormField control={control} name="content" render={({field, fieldState: {error}}) =>
                     <FormItem>
-                        <FormLabel>{field.name[0].toUpperCase() + field.name.substring(1)}</FormLabel>
+                        <FormLabel>Content</FormLabel>
                         <FormControl>
                             <Textarea {...field} />
                         </FormControl>
@@ -152,10 +154,8 @@ export default function CreateForm() {
                     </FormItem>
                 }/>
                 <div className={"flex flex-col items-start w-fit"}>
-                    <div className={"border-2 rounded-lg p-4 w-[400px] h-[400px]"}>
-                        {!!getValues("featuredImage") && !!getValues("featuredImage") ?
-                            <Image src={URL.createObjectURL(getValues("featuredImage"))} alt="a" height={400}
-                                   width={400} className={"object-cover"}/> : ""}
+                    <div className={"border-2 rounded-lg p-4 w-[300px] h-[300px] flex flex-col items-center justify-center"}>
+                        <Previsualizer watch={watch} />
                     </div>
                     <Button
                         type={"button"}

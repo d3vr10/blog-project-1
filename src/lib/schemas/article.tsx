@@ -6,16 +6,24 @@ export const createSchemaClient = z.object({
     content: z.string().min(1),
     excerpt: z.string().min(1),
     featuredImage: z
-        .unknown()
-        .transform((value) => value as FileList | undefined | null)
-        .transform((value) =>  value? value[0] as File : value as undefined | null )
+        .instanceof(FileList)
+        .optional()
+        .transform((value) => {
+            if (value && value.length > 0)
+                return value[0] as File
+            else if (value && value.length === 0)
+                return value[0] as unknown as undefined
+            return undefined
+        })
         .refine((value) => !!value, { message: "Featured image is missing!"})
         .refine((value) => {
                 return value? value.size <= 5 * 1024 * 1024 : true;
         }, { message: `File cannot be bigger than 5MB`})
-        .refine((value) => value? allowedFileExt.includes(value.name.split(".").reverse()[0]): true, {message: `File extension is wrong. Allowed extensions are: ${allowedFileExt.join(", ")}`})
+        .refine((value) => value? allowedFileExt.includes(value.name.split(".").reverse()[0]) : true, {message: `File extension is wrong. Allowed extensions are: ${allowedFileExt.join(", ")}`})
 
 })
+
+export const featuredImageSchemaClient = createSchemaClient.pick({featuredImage: true})
 
 export const editSchemaClient = z.object({
     title: z.string().min(1),
