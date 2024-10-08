@@ -6,9 +6,9 @@ import {redirect} from "next/navigation";
 const allowedKeys: string[] = ["hello"]
 
 const protectedRoutes = [
-    "/_components",
-    "/_components/create",
-    "/_components/edit",
+    "/dashboard",
+    "/dashboard/create",
+    "/dashboard/edit",
 ]
 export default withContext(allowedKeys, async (req, setContext) => {
     if (protectedRoutes.includes(req.nextUrl.pathname)) {
