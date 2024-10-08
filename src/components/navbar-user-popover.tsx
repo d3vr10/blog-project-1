@@ -14,7 +14,7 @@ export default function NavbarUserPopover(  ) {
     const handleLogout = async () => {
         await logout()
         setOpen(false);
-        setAuth((state: any) => ({ setAuth, auth: undefined }))
+        setAuth(null)
     }
     return (
         <Popover open={open} onOpenChange={() => setOpen((state) => !state)}>

@@ -24,7 +24,7 @@ const authSchema = z.object({
 type AuthSchemaType = z.infer<typeof authSchema>
 
 export default function SigninForm({ setOpen }: { setOpen: Dispatch<any>}) {
-    const auth = useAuth()
+    const {auth, setAuth} = useAuth()
     const router = useRouter()
     const { toast } = useToast()
     const form = useForm<AuthSchemaType>({
@@ -57,7 +57,7 @@ export default function SigninForm({ setOpen }: { setOpen: Dispatch<any>}) {
         }
 
         setOpen(false)
-        auth.setAuth(state => ({ ...state, auth: response.payload  }))
+        setAuth(response.payload)
         toast({
             title: "Success",
             description: "You have been authenticated",
