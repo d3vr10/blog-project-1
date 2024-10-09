@@ -5,7 +5,7 @@ import env from "@/lib/env";
 
 export async function storeFile({ file, title, username }: { file: File, title: string, username: string}) {
     const data = await file.arrayBuffer()
-    const key = path.join(title, username, file.name)
+    const key = path.posix.join(title, username, file.name)
     const absoluteDirPath = path.join(process.cwd(), env.ARTICLE_DIR)
     try {
         fs.mkdirSync(absoluteDirPath, { recursive: true })
@@ -22,5 +22,5 @@ export  function retrieveFileContents(key: string){
 }
 
 export function removeFileContents(key: string){
-    fs.rmSync(path.join(process.cwd(), env.ARTICLE_DIR, key), {force: true})
+    fs.rmSync(path.join(process.cwd(), env.ARTICLE_DIR, key.split(path.posix.sep)[0]), {recursive: true, force: true})
 }
