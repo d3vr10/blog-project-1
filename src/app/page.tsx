@@ -29,7 +29,7 @@ export default async function Home() {
 
                 }
                 return (
-                    <ArticleCard key={article.id} article={encodedArticle} suppressHydrationWarning />
+                    <ArticleCard key={article.id} article={encodedArticle}  />
                 )
             })
             }
