@@ -5,6 +5,7 @@ import Navbar from "@/components/navbar";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/toaster";
 import AuthProvider from "@/app/auth/_components/context";
+import AudioComponent from "@/app/audio";
 
 
 const geistSans = localFont({
@@ -47,6 +48,7 @@ export default function RootLayout({
           </AuthProvider>
         </ThemeProvider>
         <Toaster />
+        <AudioComponent />
       </body>
     </html>
   );
