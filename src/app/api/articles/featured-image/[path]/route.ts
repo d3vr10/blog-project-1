@@ -11,6 +11,5 @@ export async function GET(req, { params: {path: encodedPath}}: { params: { path:
 
         }
     })
-    console.log(path.basename(filePath))
     return res
 }

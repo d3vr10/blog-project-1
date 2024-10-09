@@ -1,7 +1,7 @@
 import db from "@/lib/db";
 import {retrieveFileContents} from "@/lib/fs/file-storage";
 import path from "path";
-import {default as ArticleCard} from "@/components/testing2"
+import {default as ArticleCard} from "@/components/article-card"
 
 export default async function Home() {
     const articles = await db.query.articleSchema.findMany()

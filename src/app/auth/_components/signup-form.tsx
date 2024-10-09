@@ -15,7 +15,7 @@ import { useAuth } from "./context";
 
 
 export default function SignupForm() {
-    const auth = useAuth()
+    const { auth, setAuth } = useAuth()
     const router = useRouter()
     const { toast } = useToast()
     const form = useForm<UserCreateType>({ 
@@ -44,7 +44,7 @@ export default function SignupForm() {
             }
         }
         else {
-            auth.setAuth(response.payload)
+            setAuth(response.payload)
         }
         toast({
             title: "Success",

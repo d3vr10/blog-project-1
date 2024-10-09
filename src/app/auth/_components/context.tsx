@@ -14,7 +14,7 @@ export function useAuth() {
     return authContext
 }
 export default function AuthProvider({ children }: { children: React.ReactNode }) {
-    const [auth, setAuth] = useState<any>(initialValue)
+    const [auth, setAuth] = useState<any>(null)
     const [loading, setLoading] = useState<boolean>(true)
     useEffect(() => {
         (async () => {
