@@ -1,7 +1,7 @@
 "use server";
 
 
-import { eq } from "drizzle-orm";
+import {eq, not} from "drizzle-orm";
 import db from "../db";
 import { articleSchema } from "../db/schemas";
 import {createSchemaServer, editSchemaServer} from "../schemas/article";
@@ -138,6 +138,37 @@ export async function editArticle(values: { title: string, content: string, exce
     }
 }
 
+export async function toggleArticleVisibility(id: string) {
+    try {
+        const [row] =  await db
+            .update(articleSchema)
+            .set({visible: not(articleSchema.visible)})
+            .where(eq(articleSchema.id, id))
+            .returning()
+        if (row)
+            return {
+                status: 200,
+                message: `Article "${row.id}" is hidden now`
+            }
+    } catch(err: any) {
+        return {
+            status:  500,
+            error: {
+                message: err.message
+            }
+        }
+    }
+
+    return {
+        status: 404,
+        error: {
+            message: "Article not found!"
+        }
+    }
+
+
+
+}
 
 export async function retrieveFeaturedImage(slug: string) {
     const article = await db.query.articleSchema.findFirst({
