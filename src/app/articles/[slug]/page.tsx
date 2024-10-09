@@ -16,6 +16,10 @@ export default async function Page({params: {slug}}: { params: { slug: string } 
     if (!joinedResult) {
         notFound()
     }
+    let key = joinedResult.article.featuredImage? joinedResult.article.featuredImage
+            .replace("^/+", "")
+            .replace("/+$", "")
+        : undefined //coercing to aws-like key format
     return (
 
         <div className={"w-[1248px] mx-auto"}>
@@ -30,8 +34,8 @@ export default async function Page({params: {slug}}: { params: { slug: string } 
                 </div>
                 <div className={"xl:w-4/5  "}>
                     <div className={"border-2 aspect-video mb-6 w-full h-auto"}>
-                        {joinedResult.article.featuredImage ?
-                            <Image src={"/api/articles/featured-image/" + encodeURIComponent(joinedResult.article.featuredImage)}
+                        {key ?
+                            <Image src={"/api/articles/featured-image/" + encodeURIComponent(key)}
                                    width={1280}
                                    height={720} alt={"Article's portrait"} className={"max-w-full h-auto  block object-cover"} /> : ""}
                     </div>

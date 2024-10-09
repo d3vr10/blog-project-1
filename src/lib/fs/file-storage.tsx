@@ -4,17 +4,17 @@ import {v7} from "uuid";
 import env from "@/lib/env";
 
 export async function storeFile({ file, title, username }: { file: File, title: string, username: string}) {
-    const data = await file.arrayBuffer()
-    const key = path.posix.join(title, username, file.name)
-    const absoluteDirPath = path.join(process.cwd(), env.ARTICLE_DIR)
     try {
-        fs.mkdirSync(absoluteDirPath, { recursive: true })
+        const data = await file.arrayBuffer()
+        const key = path.posix.join( username,title, file.name)
+        const absoluteDirPath = path.join(process.cwd(), env.ARTICLE_DIR)
+        fs.mkdirSync(path.join(absoluteDirPath, key.split(path.posix.sep).slice(0, 2).join(path.posix.sep)), { recursive: true })
         fs.writeFileSync(path.join(absoluteDirPath, key), new Uint8Array(data));
 
+        return key
     } catch(err) {
         throw err
     }
-    return key
 }
 
 export  function retrieveFileContents(key: string){

@@ -7,6 +7,8 @@ import { articleSchema } from "../db/schemas";
 import {createSchemaServer, editSchemaServer} from "../schemas/article";
 import { slugify } from "../utils";
 import {removeFileContents, retrieveFileContents, storeFile} from "@/lib/fs/file-storage";
+import {verify} from "@/lib/auth/jwt";
+import {cookies} from "next/headers";
 
 export async function createArticle(values: {
     title: string,
@@ -19,7 +21,18 @@ export async function createArticle(values: {
         const { title, content, excerpt, featuredImage } = createSchemaServer.parse(values)
         let path = undefined
         if (featuredImage) {
-            path = await storeFile(featuredImage)
+            const tokenCookie = cookies().get("auth_token")
+            if (tokenCookie) {
+                const payload = await verify(tokenCookie.value)
+                path = await storeFile({ title, username: payload.username as string, file: featuredImage})
+            } else {
+                return {
+                    status: 403,
+                    error: {
+                        message: "Not authorized",
+                    }
+                }
+            }
         }
         await db.insert(articleSchema).values({
             title,
