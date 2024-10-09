@@ -16,7 +16,6 @@ import {EyeIcon, EyeOffIcon, MoreHorizontal, PencilIcon, TrashIcon} from "lucide
 import {deleteArticle, toggleArticleVisibility} from "@/lib/articles/actions";
 import {refreshArticles} from "@/app/actions";
 import Link from "next/link";
-import {Simulate} from "react-dom/test-utils";
 import {revalidatePathAction} from "@/app/testing/actions";
 
 export const columns: ColumnDef<InferSelectModel<typeof articleSchema>>[] = [
@@ -39,7 +38,6 @@ export const columns: ColumnDef<InferSelectModel<typeof articleSchema>>[] = [
     {
         id: "actions",
         cell: ({row}) => {
-            const payment = row.original
             return (
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
@@ -63,7 +61,7 @@ export const columns: ColumnDef<InferSelectModel<typeof articleSchema>>[] = [
                         <DropdownMenuItem
                             className={"text-yellow-500 cursor-pointer"}
                         >
-                            <Link href={""} className={"w-full  flex gap-x-1"}><PencilIcon size={20}/> Edit</Link>
+                            <Link href={`/dashboard/edit/${row.original.slug}`} className={"w-full  flex gap-x-1"}><PencilIcon size={20}/> Edit</Link>
                         </DropdownMenuItem>
 
                         <DropdownMenuItem
