@@ -1,25 +1,26 @@
 import * as fs from "node:fs";
 import path from "path";
 import {v7} from "uuid";
+import env from "@/lib/env";
 
-export async function storeFile(file: File) {
+export async function storeFile({ file, title, username }: { file: File, title: string, username: string}) {
     const data = await file.arrayBuffer()
-    const parentDir = path.join(process.cwd(), "articlesData", v7())
-    const filePath = path.join(parentDir, file.name + `.${file.type.split("/")[1]}`)
+    const key = path.join(title, username, file.name)
+    const absoluteDirPath = path.join(process.cwd(), env.ARTICLE_DIR)
     try {
-        fs.mkdirSync(parentDir, { recursive: true })
-        fs.writeFileSync(filePath, new Uint8Array(data));
+        fs.mkdirSync(absoluteDirPath, { recursive: true })
+        fs.writeFileSync(path.join(absoluteDirPath, key), new Uint8Array(data));
 
     } catch(err) {
         throw err
     }
-    return filePath
+    return key
 }
 
-export  function retrieveFileContents(filePath: string){
-    return fs.readFileSync(filePath)
+export  function retrieveFileContents(key: string){
+    return fs.readFileSync(path.join(process.cwd(), env.ARTICLE_DIR, key))
 }
 
-export function removeFileContents(filePath: string){
-    fs.rmSync(filePath, {force: true})
+export function removeFileContents(key: string){
+    fs.rmSync(path.join(process.cwd(), env.ARTICLE_DIR, key), {force: true})
 }
