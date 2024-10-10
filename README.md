@@ -1,4 +1,9 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app)
+
+## HEADS UP!
+For this project to run, it is necessary to set the `JWT_SECRET` environment variable.
+You can do so by creating either an `.env.local` or `.env` file right under the root folder of the project. 
+You can add a line like this to the file: `JWT_SECRET=secret`
 
 ## Getting Started
 
