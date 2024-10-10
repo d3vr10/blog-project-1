@@ -3,10 +3,10 @@
 
 import {eq, not} from "drizzle-orm";
 import db from "../db";
-import { articleSchema } from "../db/schemas";
+import {articleSchema} from "../db/schemas";
 import {createSchemaServer, editSchemaServer} from "../schemas/article";
-import { slugify } from "../utils";
-import {removeFileContents, retrieveFileContents, storeFile} from "@/lib/fs/file-storage";
+import {slugify} from "../utils";
+import {removeArticleImage, removeFileContents, retrieveFileContents, storeFile} from "@/lib/fs/file-storage";
 import {verify} from "@/lib/auth/jwt";
 import {cookies} from "next/headers";
 
@@ -18,13 +18,13 @@ export async function createArticle(values: {
     userId: string,
 }) {
     try {
-        const { title, content, excerpt, featuredImage } = createSchemaServer.parse(values)
+        const {title, content, excerpt, featuredImage} = createSchemaServer.parse(values)
         let path = undefined
         if (featuredImage) {
             const tokenCookie = cookies().get("auth_token")
             if (tokenCookie) {
                 const payload = await verify(tokenCookie.value)
-                path = await storeFile({ title, username: payload.username as string, file: featuredImage})
+                path = await storeFile({title, username: payload.username as string, file: featuredImage})
             } else {
                 return {
                     status: 403,
@@ -67,17 +67,22 @@ export async function createArticle(values: {
 
 export async function deleteArticle(slug: string) {
     try {
+        const article = await db.query.articleSchema.findFirst({where: eq(articleSchema.slug, slug)})
+        if (!article)
+            return {
+                status: 404,
+                error: {
+                    message: "Article does not exist",
+                }
+            }
+        if (article.featuredImage) {
+            removeArticleImage(article.featuredImage)
+        }
         const articles = await db.delete(articleSchema).where(eq(articleSchema.slug, slug)).returning()
         if (articles.length > 0) {
             return {
                 status: 200,
                 message: `Article "${slug}" was deleted`
-            }
-        } else return {
-            status: 404,
-            error: {
-                message: `Article ${slug} does not exist!`
-
             }
         }
     } catch (err: any) {
@@ -91,14 +96,21 @@ export async function deleteArticle(slug: string) {
 
 }
 
-export async function editArticle(values: { title: string, content: string, excerpt: string, featuredImage?: FormData | null | undefined, slug: string }) {
-    const { title, content, excerpt, featuredImage } = editSchemaServer.parse(values)
+export async function editArticle(values: {
+    title: string,
+    content: string,
+    excerpt: string,
+    featuredImage?: FormData | null | undefined,
+    slug: string
+}) {
+    const {title, content, excerpt, featuredImage} = editSchemaServer.parse(values)
     try {
         const oldArticle = await db.query.articleSchema.findFirst({
             columns: {
                 id: true,
                 slug: true,
                 featuredImage: true,
+                title: true
             },
             where: eq(articleSchema.slug, values.slug)
         })
@@ -112,10 +124,12 @@ export async function editArticle(values: { title: string, content: string, exce
         }
         let path = undefined
         if (featuredImage) {
-            path = await storeFile(featuredImage)
+            const {username} = await verify(cookies().get("auth_token")?.value as unknown as string)
             if (oldArticle.featuredImage) {
-                removeFileContents(oldArticle.featuredImage)
+                removeArticleImage(oldArticle.featuredImage)
             }
+            path = await storeFile({username: username as string, title: oldArticle.title, file: featuredImage})
+
         } else if (featuredImage === null && oldArticle.featuredImage) {
             path = null
             await removeFileContents(oldArticle.featuredImage)
@@ -128,7 +142,7 @@ export async function editArticle(values: { title: string, content: string, exce
             status: 200,
             message: "Updated article"
         }
-    } catch(err: any){
+    } catch (err: any) {
         return {
             status: 500,
             error: {
@@ -140,7 +154,7 @@ export async function editArticle(values: { title: string, content: string, exce
 
 export async function toggleArticleVisibility(id: string) {
     try {
-        const [row] =  await db
+        const [row] = await db
             .update(articleSchema)
             .set({visible: not(articleSchema.visible)})
             .where(eq(articleSchema.id, id))
@@ -150,9 +164,9 @@ export async function toggleArticleVisibility(id: string) {
                 status: 200,
                 message: `Article "${row.id}" is hidden now`
             }
-    } catch(err: any) {
+    } catch (err: any) {
         return {
-            status:  500,
+            status: 500,
             error: {
                 message: err.message
             }
@@ -165,7 +179,6 @@ export async function toggleArticleVisibility(id: string) {
             message: "Article not found!"
         }
     }
-
 
 
 }

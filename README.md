@@ -3,7 +3,25 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 ## HEADS UP!
 For this project to run, it is necessary to set the `JWT_SECRET` environment variable.
 You can do so by creating either an `.env.local` or `.env` file right under the root folder of the project. 
-You can add a line like this to the file: `JWT_SECRET=secret`
+You can add a line like this to the file: 
+```
+JWT_SECRET=secret
+```
+
+
+## Quick INIT
+To initialize the database, build the production files and start the project at once.. Just do:
+
+```bash
+npm run bootstrap
+# or
+yarn bootstrap
+# or
+pnpm dev
+# or
+bun dev
+```
+
 
 ## Getting Started
 
