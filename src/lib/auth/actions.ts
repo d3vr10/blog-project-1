@@ -2,7 +2,7 @@
 
 import { eq } from "drizzle-orm";
 import db from "../db";
-import { userSchema } from "../db/schemas";
+import {forgotPasswordSchema, userSchema} from "../db/schemas";
 import argon from "argon2"
 import { cookies } from "next/headers";
 import { encrypt, verify } from "./jwt";
@@ -123,6 +123,29 @@ export async function validateSession() {
         error: {
             message: "Session does not exist",
         }
+    }
+}
+
+export async function forgotPassword(encodedToken: string) {
+    const token = decodeURIComponent(encodedToken)
+    const {id}: any = await verify(token)
+    const userForgotToken = await db.query.forgotPasswordSchema.findFirst({
+        where: eq(forgotPasswordSchema.userId, id)
+    })
+    if (!userForgotToken) {
+
+        return {
+            status: 404,
+            error: {
+                message: "Token doesn't exist"
+            }
+        }
+    }
+
+    const row = await db.delete(forgotPasswordSchema).where(eq(forgotPasswordSchema.userId, id))
+    return {
+        status: 200,
+        message: "Token is valid!"
     }
 }
 
