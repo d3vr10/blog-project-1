@@ -142,7 +142,10 @@ export async function forgotPassword(encodedToken: string) {
         }
     }
 
-    const row = await db.delete(forgotPasswordSchema).where(eq(forgotPasswordSchema.userId, id))
+    cookies().set("forgot-password-token", userForgotToken.token, {
+        expires: Date.now() + 1000 * 60 * 60 * 2,
+        httpOnly: true,
+    })
     return {
         status: 200,
         message: "Token is valid!"

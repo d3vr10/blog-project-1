@@ -42,7 +42,7 @@ export default function Page() {
 
     const tokenProvidedView = (
         <>
-            {verifying && (
+            {verifying || !userMsg && (
                 <div className={""}>
                     Wait. We are verifying your token
                     <span className={"animate-spin border-2 border-t-0 h-1 w-1 rounded-full"}></span>
