@@ -22,11 +22,12 @@ export async function sendMail(sendOptions: {
 }) {
     const options: Mail.Options = {...sendOptions, from: `MonoArc <${env.EMAIL_USERNAME}>`};
 
-    const response = await transporter.sendMail(options, (error, info) => {
-        console.log("error mail not sent\n", Object.getOwnPropertyNames(error))
+    await transporter.sendMail(options, (error, info) => {
+        if (error) {
+            throw error
+        }
         console.log(`error info: "${info}"`)
     });
-    return response;  // Return response for further processing if needed
 }
 
 

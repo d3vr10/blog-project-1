@@ -51,6 +51,7 @@
     "zod": "^3.23.8"
   },
   "devDependencies": {
+    "@drizzle-team/studio": "^1.0.0",
     "@types/argon2": "^0.14.1",
     "@types/better-sqlite3": "^7.6.11",
     "@types/node": "^20",
