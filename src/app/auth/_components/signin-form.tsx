@@ -97,7 +97,7 @@ export default function SigninForm({ setOpen }: { setOpen: Dispatch<any>}) {
 
                 {errors?.root ? <div className="text-sm text-red-800 text-center">{errors.root.message}</div> : ""}
 
-                <div className="text-center"><Link href={""} className="text-blue-400 text-sm">Forgot password?</Link></div>
+                <div className="text-center"><Link href={"/auth/forgot-password"} onClick={()=> setOpen(false)} className="text-blue-400 text-sm">Forgot password?</Link></div>
                 <div className="flex justify-between items-center gap-x-4 my-4">
                     <span className="h-[1px] flex-grow block bg-zinc-400"></span>
                     <span className="text-sm">OR</span>
