@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import {Button} from "@/components/ui/button";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import {KeyIcon, KeyRoundIcon} from "lucide-react";
 import {SubmitHandler, useForm} from "react-hook-form";
 import z from "zod";
@@ -11,6 +11,7 @@ import {Input} from "@/components/ui/input";
 import {generateForgotPasswordToken} from "@/app/auth/forgot-password/actions";
 import {toast} from "@/hooks/use-toast";
 import LoaderSubmitButton from "@/components/loader-submit-button";
+import {useForgotPasswordEmail} from "@/app/auth/forgot-password/_components/context";
 
 const forgotEmailSchema = z.object({
     email: z.string().email()
@@ -18,7 +19,7 @@ const forgotEmailSchema = z.object({
 type ForgotEmailSchema = z.infer<typeof forgotEmailSchema>
 
 export default  function Page() {
-    const [emailProvided, setEmailProvided] = useState(false);
+    const {email, setEmail} = useForgotPasswordEmail();
     const form = useForm<ForgotEmailSchema>({
         resolver: zodResolver(forgotEmailSchema),
         mode: "all",
@@ -26,6 +27,10 @@ export default  function Page() {
             email: "",
         }
     });
+    useEffect(() => {
+        if (typeof window !== "undefined") {
+        }
+    }, []);
     const {handleSubmit, formState} = form
     const onSubmit: SubmitHandler<ForgotEmailSchema> = async ({email}) => {
         const res = await generateForgotPasswordToken(email)
@@ -45,12 +50,12 @@ export default  function Page() {
             })
             return;
         }
-        setEmailProvided(true)
+        setEmail(true)
     }
     return (
         <div
             className={"absolute top-1/2 border-2 rounded-lg p-6 flex flex-col gap-y-4 left-1/2 -translate-y-1/2 -translate-x-1/2 w-4/5 md:w-2/4 xl:w-1/6 "}>
-            {!emailProvided && (
+            {!email && (
                 <>
                     <div className={"p-4 rounded-full border-2 w-fit mx-auto"}><KeyRoundIcon className={""}/></div>
                     <div>
@@ -71,7 +76,7 @@ export default  function Page() {
                     </div>
                 </>
             )}
-            {emailProvided && (
+            {email && (
                 <>
                     <h1 className={"text-3xl tracking-tight"}>Please check your email and click on the verification
                         link

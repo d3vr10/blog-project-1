@@ -8,15 +8,13 @@ export default function Page() {
     const searchParams = useSearchParams();
     const router = useRouter()
     const encodedToken = searchParams.get("token")
-    let token: string | undefined;
-    if (encodedToken)
-        token = decodeURIComponent(encodedToken);
     const [verifying, setVerifying] = useState(true);
     const [userMsg, setUserMsg] = useState<{ title: string, description: string } | null>(null);
     useEffect(() => {
         (async () => {
-            if (token) {
-                const isValidRes = await forgotPassword(token)
+            if (encodedToken) {
+                const decodedToken = decodeURIComponent(encodedToken)
+                const isValidRes = await forgotPassword(decodedToken)
                 setVerifying(false)
                 if (isValidRes.error) {
                     setUserMsg({
@@ -34,19 +32,22 @@ export default function Page() {
         })()
     }, []);
 
-    const tokenNotProvidedView = (
-        <>
-            <div>Please check your email and click on the verification link.</div>
-        </>
-    )
+    if (!encodedToken) {
+        return (
+                <div className={""}>
+                No token has been supplied. Please check your email and click on the verification link.
+            </div>
+        )
+    }
+
     const tokenProvidedView = (
         <>
             {verifying && (
                 <div className={""}>
                     Wait. We are verifying your token
-                    <span className={"animate-spin border-2 border-t-0 h-1 w-1 rounded-full"}></span></div>
-            )
-            }
+                    <span className={"animate-spin border-2 border-t-0 h-1 w-1 rounded-full"}></span>
+                </div>
+            )}
             {
                 !verifying && userMsg && (
                     <div className={""}>
@@ -62,7 +63,7 @@ export default function Page() {
             className={"flex text-center justify-center absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"}>
             <h1 className={"text-5xl"}>Forgot Password</h1>
             <div>
-                {token? tokenProvidedView : tokenNotProvidedView}
+                { tokenProvidedView  }
             </div>
         </div>
 
