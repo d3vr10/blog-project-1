@@ -1,2 +1,0 @@
-/public/sound/monodrone.mp3 filter=lfs diff=lfs merge=lfs -text
-/public/sound/monodrone.mp4 filter=lfs diff=lfs merge=lfs -text
