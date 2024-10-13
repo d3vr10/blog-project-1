@@ -35,7 +35,7 @@ export async function sendMail(sendOptions: {
 }
 
 
-export async function sendForgotPassword(username: string, email: string, token: string) {
+export async function sendForgotPasswordEmail(username: string, email: string, token: string) {
     await sendMail({
         to: `${username} ${email}`,
         subject: "Reset password",
@@ -46,7 +46,7 @@ export async function sendForgotPassword(username: string, email: string, token:
 
         To reset your password, please click the link below:
 
-        ${env.NEXT_PUBLIC_FORGOT_PASSWORD}?token=${token}
+        ${env.NEXT_PUBLIC_FORGOT_PASSWORD}/verify?token=${token}
 
         Once you click the link, you will be directed to a page where you can create a new password. Please choose a strong password that you haven't used before.
 
@@ -64,7 +64,7 @@ export async function sendForgotPassword(username: string, email: string, token:
         <p>To reset your password, please click the link below:</p>
 
         <p>
-            <a href="${env.NEXT_PUBLIC_FORGOT_PASSWORD}?token=${token}">Reset Your Password</a>
+            <a href="${env.NEXT_PUBLIC_FORGOT_PASSWORD}/verify?token=${token}">Reset Your Password</a>
         </p>
 
         <p>Once you click the link, you will be directed to a page where you can create a new password. Please choose a strong password that you haven't used before.</p>
