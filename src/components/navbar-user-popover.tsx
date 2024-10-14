@@ -31,7 +31,7 @@ export default function NavbarUserPopover(  ) {
                     </div>
                     <div className="flex flex-col gap-y-3 [&_button]:flex [&_button]:gap-x-2 [&_button]:justify-start">
 
-                        <Link onClick={() => setOpen(false)} className="flex items-center gap-x-4 grid" href={"/dashboard"}><Button className="">
+                        <Link onClick={() => setOpen(false)} className="flex items-center gap-x-4 " href={"/dashboard"}><Button className="">
                             <ChartBarIncreasing /><span>Dashboard</span>
                         </Button></Link>
                         <Button className=" " onClick={ handleLogout}><LogOutIcon />Logout</Button>

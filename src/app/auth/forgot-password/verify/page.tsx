@@ -34,7 +34,7 @@ export default function Page() {
 
     if (!encodedToken) {
         return (
-                <div className={""}>
+            <div className={""}>
                 No token has been supplied. Please check your email and click on the verification link.
             </div>
         )
@@ -43,9 +43,9 @@ export default function Page() {
     const tokenProvidedView = (
         <>
             {verifying || !userMsg && (
-                <div className={""}>
+                <div className={"flex flex-col gap-y-2"}>
                     Wait. We are verifying your token
-                    <span className={"animate-spin border-2 border-t-0 h-1 w-1 rounded-full"}></span>
+                    <div className={"animate-spin border-2 border-t-0 h-1 w-1  rounded-full"}></div>
                 </div>
             )}
             {
@@ -60,10 +60,10 @@ export default function Page() {
     )
     return (
         <div
-            className={"flex text-center justify-center absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"}>
+            className={"flex flex-col items-center text-center justify-center absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"}>
             <h1 className={"text-5xl"}>Forgot Password</h1>
             <div>
-                { tokenProvidedView  }
+                {tokenProvidedView}
             </div>
         </div>
 
