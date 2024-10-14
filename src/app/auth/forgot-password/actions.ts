@@ -8,15 +8,23 @@ import {sendForgotPasswordEmail} from "@/lib/auth/mailer";
 import {cookies} from "next/headers";
 import argon from "argon2";
 
-export async function generateForgotPasswordToken(email: string, display: "email" | "terminal" = "email") {
-    const [row] = await db.select().from(userSchema).where(eq(userSchema.email, email)).leftJoin(
+export async function generateForgotPasswordToken(
+    {resetValue, resetMethod}: {
+        resetValue: string,
+        resetMethod: "username" | "email"
+    },
+    display: "email" | "terminal" = "email",
+) {
+    const [row] = await db.select().from(userSchema).where(
+        resetMethod === "email" ? eq(userSchema.email, resetValue) : eq(userSchema.username, resetValue)
+    ).leftJoin(
         forgotPasswordSchema, eq(userSchema.id, forgotPasswordSchema.userId)
     )
     if (!row) {
         return {
             status: 404,
             error: {
-                message: `Account with this email "${email}" doesn't exist`
+                message: `Account with this ${resetMethod} "${resetValue}" doesn't exist`
             }
         }
     }
@@ -31,7 +39,10 @@ export async function generateForgotPasswordToken(email: string, display: "email
             }
         }
     }
-    const [insertedRow] = await db.insert(forgotPasswordSchema).values({userId: row.user.id, token: randomBytes(128).toString("hex")}).returning()
+    const [insertedRow] = await db.insert(forgotPasswordSchema).values({
+        userId: row.user.id,
+        token: randomBytes(128).toString("hex")
+    }).returning()
     if (!insertedRow) {
         return {
             status: 200,
@@ -52,7 +63,7 @@ export async function generateForgotPasswordToken(email: string, display: "email
 
 export default async function resetPassword(password: string) {
     const token = cookies().get("forgot-password-token")?.value
-    if (!token){
+    if (!token) {
         return {
             status: 429,
             error: {
@@ -77,7 +88,7 @@ export default async function resetPassword(password: string) {
     const hash = await argon.hash(password)
     const [insertedRow] = await db
         .update(userSchema)
-        .set({ password: hash })
+        .set({password: hash})
         .where(eq(userSchema.id, row.userId))
         .returning()
     if (!insertedRow) {

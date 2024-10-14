@@ -13,7 +13,7 @@ import {
     FormMessage
 } from "../../../components/ui/form";
 import {Input} from "../../../components/ui/input";
-import LoaderSubmitButton from "../../../components/loader-submit-button";
+import LoaderButton from "../../../components/loader-button";
 import {Button} from "../../../components/ui/button";
 import {signUp} from "@/lib/auth/actions";
 import {useRouter} from "next/navigation";
@@ -134,7 +134,7 @@ export default function SignupForm() {
                 />
                 <div className="flex justify-end gap-x-4 mt-4">
                     <Button onClick={() => form.reset()}>Reset</Button>
-                    <LoaderSubmitButton isSubmitting={formState.isSubmitting}/>
+                    <LoaderButton isSubmitting={formState.isSubmitting}/>
                 </div>
 
             </form>

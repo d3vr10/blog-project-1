@@ -14,7 +14,7 @@ import {
 import {Input} from "../../../components/ui/input";
 import {Textarea} from "../../../components/ui/textarea";
 import {Button} from "../../../components/ui/button";
-import LoaderSubmitButton from "../../../components/loader-submit-button";
+import LoaderButton from "../../../components/loader-button";
 import {useRouter} from "next/navigation";
 import {CreateArticleSchemaClient,} from "@/lib/schemas/article";
 import {createArticle} from "@/lib/articles/actions";
@@ -175,7 +175,7 @@ export default function CreateForm() {
                         excerpt: "",
                         featuredImage: undefined,
                     })}>Clear</Button>
-                    <LoaderSubmitButton isSubmitting={formState.isSubmitting}/>
+                    <LoaderButton isSubmitting={formState.isSubmitting}/>
                 </div>
             </form>
         </Form>

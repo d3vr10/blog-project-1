@@ -1,15 +1,18 @@
 "use server";
 
-import { eq } from "drizzle-orm";
+import {eq} from "drizzle-orm";
 import db from "../db";
 import {forgotPasswordSchema, userSchema} from "../db/schemas";
 import argon from "argon2"
-import { cookies } from "next/headers";
-import { encrypt, verify } from "./jwt";
+import {cookies} from "next/headers";
+import {encrypt, verify} from "./jwt";
 
-export async function signIn(username: string, password: string) {
+export async function signIn({signInMethod, signInValue}: {
+    signInMethod: "username" | "email",
+    signInValue: string
+}, password: string) {
     const user = await db.query.userSchema.findFirst({
-        where: eq(userSchema.username, username),
+        where: signInMethod === "username"? eq(userSchema.username, signInValue) : eq(userSchema.email, signInValue),
     })
 
     if (user) {
@@ -40,10 +43,10 @@ export async function signIn(username: string, password: string) {
 }
 
 export async function signUp({
-    email,
-    username,
-    password,
-}: {
+                                 email,
+                                 username,
+                                 password,
+                             }: {
     email: string,
     username: string,
     password: string,
@@ -71,7 +74,7 @@ export async function signUp({
         if (err.code === "SQLITE_CONSTRAINT_UNIQUE") {
             const match = /\.(?<column>[A-Z0-9]+)/i.exec(err.message)
             if (match) {
-                const { column }: { column: string } = match.groups as Exclude<undefined, typeof match.groups>
+                const {column}: { column: string } = match.groups as Exclude<undefined, typeof match.groups>
                 return {
                     status: 409,
                     error: {
@@ -100,10 +103,14 @@ export async function signUp({
 export async function validateSession() {
     const cookie = cookies().get("auth_token")
     if (cookie) {
-        const { value } = cookie
+        const {value} = cookie
         try {
             const jwtPayload = await verify(value)
-            const payload = { id: jwtPayload.id as string, username: jwtPayload.username as string, email: jwtPayload.email as string }
+            const payload = {
+                id: jwtPayload.id as string,
+                username: jwtPayload.username as string,
+                email: jwtPayload.email as string
+            }
             return {
                 status: 200,
                 payload: payload,

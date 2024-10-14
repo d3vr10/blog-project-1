@@ -73,7 +73,7 @@ export default function Footer() {
                 {/* Copyright */}
                 <div
                     className="mt-8 pt-8 border-t border-muted-foreground/20 text-center text-sm text-muted-foreground">
-                    © {new Date().getFullYear()} MultiPost Blog. All rights reserved.
+                    © {new Date().getFullYear()} MonoArc. All rights reserved.
                 </div>
             </div>
         </footer>

@@ -1,9 +1,10 @@
+"use client";
 import {DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger,} from "@/components/ui/dropdown-menu"
 import {Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle} from "@/components/ui/card";
-import LoaderSubmitButton from "@/components/loader-submit-button";
+import LoaderButton from "@/components/loader-button";
 import {Form, FormField, FormItem, FormLabel} from "@/components/ui/form";
 import {clsx} from "clsx";
-import {useEffect, useState} from "react";
+import {useEffect, useRef, useState} from "react";
 import {useForgotPasswordEmail} from "@/app/auth/forgot-password/_components/context";
 import {SubmitHandler, useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
@@ -16,9 +17,9 @@ import {AlertCircle, AtSign, ChevronDown, User} from "lucide-react";
 import {z} from "zod";
 
 const forgotEmailSchema = z.object({
-    email: z.string().email().optional(),
+    email: z.string().email().nullable(),
     username: z.string().optional(),
-}).refine((value) => value.email || value.username, { message: "At least one of both fields must be filled out"});
+}).refine((value) => value.email || value.username, {message: "At least one of both fields must be filled out"});
 type ForgotEmailSchema = z.infer<typeof forgotEmailSchema>
 
 type ResetMethod = "email" | "username"
@@ -103,27 +104,32 @@ const CustomInput = ({
 export default function ForgotPasswordLinkForm() {
     const [resetMethod, setResetMethod] = useState<ResetMethod>("email")
     const [sentEmail, setSentEmail] = useState(false);
+    const formRef = useRef(null);
+    const defaultValues = {
+        email: null,
+        username: "",
+    }
     const form = useForm<ForgotEmailSchema>({
         resolver: zodResolver(forgotEmailSchema),
         mode: "all",
-        defaultValues: {
-            email: "",
-            username: "",
-        }
+        defaultValues: defaultValues,
     });
     useEffect(() => {
         if (typeof window !== "undefined") {
         }
     }, []);
-    const {handleSubmit, formState} = form
+    const {handleSubmit, formState, resetField} = form
     const onSubmit: SubmitHandler<ForgotEmailSchema> = async (value) => {
-        const res = await generateForgotPasswordToken(value[resetMethod] as string)
+        const res = await generateForgotPasswordToken({
+            resetMethod,
+            resetValue: value[resetMethod] as string,
+        })
         if (res.error) {
             let title;
             let message;
             if (res.status === 404) {
                 title = "Not Found"
-                message = "An account with this email doesn't exist"
+                message = `Account with this ${resetMethod} doesn't exist`
             } else {
                 title = "Server Error"
                 message = "There occurred an error while processing your request"
@@ -146,7 +152,7 @@ export default function ForgotPasswordLinkForm() {
                         <CardDescription>Enter your email or username to reset your password</CardDescription>
                     </CardHeader>
                     <Form {...form}>
-                        <form onSubmit={handleSubmit(onSubmit)}>
+                        <form onSubmit={handleSubmit(onSubmit)} ref={formRef}>
                             <CardContent className="space-y-4">
                                 <div className="space-y-2">
                                     <FormLabel htmlFor="resetInput">Email or Username</FormLabel>
@@ -158,8 +164,25 @@ export default function ForgotPasswordLinkForm() {
                                 </div>
                             </CardContent>
                             <CardFooter>
-                                <LoaderSubmitButton isSubmitting={formState.isSubmitting}>Send Reset
-                                    Link</LoaderSubmitButton>
+                                <LoaderButton
+                                    isSubmitting={formState.isSubmitting}
+                                    onClick={() => {
+                                        const set = new Set(Object.keys(defaultValues)).difference(new Set([resetMethod]))
+                                        const resetProps = Array.from(set).reduce((acc, key) => {
+                                            acc[key] = ""; // Assigning default value of ""
+                                            return acc;
+                                        }, {});
+                                        for (const key of set) {
+                                            resetField(key, {
+                                                defaultValue: defaultValues[key] as string,
+                                            });
+                                        }
+                                        handleSubmit(onSubmit)()
+                                    }}
+                                    type={"button"}
+                                >
+                                    Send Reset Link
+                                </LoaderButton>
                             </CardFooter>
                         </form>
                     </Form> </Card>)

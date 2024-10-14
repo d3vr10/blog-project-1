@@ -5,7 +5,7 @@ import {zodResolver} from "@hookform/resolvers/zod";
 import {z} from "zod";
 import {Form, FormControl, FormField, FormItem, FormLabel, FormMessage} from "@/components/ui/form";
 import {Input} from "@/components/ui/input";
-import LoaderSubmitButton from "@/components/loader-submit-button";
+import LoaderButton from "@/components/loader-button";
 import resetPassword from "@/app/auth/forgot-password/actions";
 import {useToast} from "@/hooks/use-toast";
 
@@ -87,7 +87,7 @@ export default function Page() {
                         </FormItem>
                     )}/>
 
-                    <LoaderSubmitButton isSubmitting={formState.isSubmitting}>Reset</LoaderSubmitButton>
+                    <LoaderButton isSubmitting={formState.isSubmitting}>Reset</LoaderButton>
                 </form>
 
             </Form>
