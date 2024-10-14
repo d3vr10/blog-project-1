@@ -8,7 +8,7 @@ import {sendForgotPasswordEmail} from "@/lib/auth/mailer";
 import {cookies} from "next/headers";
 import argon from "argon2";
 
-export async function generateForgotPasswordToken(email: string) {
+export async function generateForgotPasswordToken(email: string, display: "email" | "terminal" = "email") {
     const [row] = await db.select().from(userSchema).where(eq(userSchema.email, email)).leftJoin(
         forgotPasswordSchema, eq(userSchema.id, forgotPasswordSchema.userId)
     )
@@ -40,7 +40,10 @@ export async function generateForgotPasswordToken(email: string) {
             }
         }
     }
-    await sendForgotPasswordEmail(row.user.username, row.user.email, insertedRow.token)
+    if (display === "email")
+        await sendForgotPasswordEmail(row.user.username, row.user.email, insertedRow.token)
+    else if (display === "terminal")
+        console.log(`Generated forgot password token for email: "${row.user.email}"`)
     return {
         status: 200,
         message: "Reset password token was generated. Check email",
@@ -86,7 +89,9 @@ export default async function resetPassword(password: string) {
             }
         }
     }
+
     //CLEANING
+    cookies().delete("forgot-password-token")
     const [deletedRow] = await db
         .delete(forgotPasswordSchema)
         .where(eq(forgotPasswordSchema.token, token))
@@ -94,7 +99,6 @@ export default async function resetPassword(password: string) {
     if (!deletedRow) {
 
     }
-    cookies().delete("forgot-password-token")
     return {
         status: 200,
         message: "Password has been reset"

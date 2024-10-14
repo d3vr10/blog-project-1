@@ -15,7 +15,7 @@ export default function Navbar() {
             <div className="flex justify-between items-center">
                 <Link href={"/"} className="flex gap-x-2 items-center">
                     <Image src={"/images/mono-arc-center.svg"} height={40} width={40} alt=""/>
-                    <span className="tracking-tight text-xl font-semibold font-italic">Mono Arc</span>
+                    <span className="tracking-tight text-xl font-semibold font-italic">MonoArc</span>
                 </Link>
                 <div className="flex items-center gap-x-4">
                     <ToggleThemeDropdown/>

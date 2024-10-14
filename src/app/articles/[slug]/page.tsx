@@ -22,7 +22,7 @@ export default async function Page({params: {slug}}: { params: { slug: string } 
         : undefined //coercing to aws-like key format
     return (
 
-        <div className={"w-[1248px] mx-auto"}>
+        <div className={"container mx-auto"}>
             <article className={"flex flex-col gap-y-6"}>
                 <div className={"flex flex-col gap-y-6"}>
                     <h1 className={"text-5xl font-bold tracking-tight leading-none"}>{joinedResult.article.title}</h1>
@@ -32,12 +32,12 @@ export default async function Page({params: {slug}}: { params: { slug: string } 
                         <span><ClientDate/></span>
                     </div>
                 </div>
-                <div className={"xl:w-4/5  "}>
+                <div className={"xl:w-4/5 "}>
                     <div className={"border-2 aspect-video mb-6 w-full h-auto"}>
                         {key ?
                             <Image src={"/api/articles/featured-image/" + encodeURIComponent(key)}
                                    width={1280}
-                                   height={720} alt={"Article's portrait"} className={"max-w-full h-auto  block object-cover"} /> : ""}
+                                   height={720} alt={"Article's portrait"} className={"max-w-full h-auto aspect-video block object-cover"} /> : ""}
                     </div>
                     <blockquote
                         className={"border-l-2 border-muted text-muted italic pl-2 py-2  mx-auto mb-6"}>
