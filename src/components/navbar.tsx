@@ -1,9 +1,9 @@
 "use client"
 
 import Image from "next/image";
-import {AuthDialog} from "@/app/auth/_components/auth-dialog";
+import {AuthDialog} from "@/app/(auth)/auth/_components/auth-dialog";
 import ToggleThemeDropdown from "./toggle-theme-dropdown";
-import {useAuth} from "@/app/auth/_components/context";
+import {useAuth} from "@/app/(auth)/auth/_components/context";
 import Link from "next/link";
 import NavbarUserPopover from "./navbar-user-popover";
 import {Skeleton} from "@/components/ui/skeleton";

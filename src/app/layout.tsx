@@ -1,14 +1,10 @@
 import type {Metadata} from "next";
 import localFont from "next/font/local";
-import "./globals.css";
-import Navbar from "@/components/navbar";
+import "@/app/globals.css"
 import {ThemeProvider} from "@/components/theme-provider";
 import {Toaster} from "@/components/ui/toaster";
-import AuthProvider from "@/app/auth/_components/context";
 import AudioComponent from "@/components/audio";
-import Footer from "@/app/_components/footer";
-import {getServerRequestPathname} from "@/lib/server-utils";
-
+import AuthProvider from "./(auth)/auth/_components/context";
 
 const geistSans = localFont({
     src: "./fonts/GeistVF.woff",
@@ -37,28 +33,20 @@ export default function RootLayout({
         <body
             className={`${geistSans.variable} ${geistMono.variable} antialiased`}
         >
-            <ThemeProvider
-                attribute="class"
-                defaultTheme="system"
-                themes={["light", "dark"]}
-                enableSystem
-                disableTransitionOnChange
-            >
+        <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            themes={["light", "dark"]}
+            enableSystem
+            disableTransitionOnChange
+        >
 
-                <AuthProvider>
-                    <div className={"flex flex-col min-h-screen "}>
-                        <header className={""}>
-                            <Navbar/>
-                        </header>
-                        <main className="p-4 container flex-1 self-center">
-                            {children}
-                        </main>
-                        { !getServerRequestPathname().startsWith("/auth")? <Footer/> : "" }
-                    </div>
-                </AuthProvider>
-            </ThemeProvider>
-            <Toaster/>
-            <AudioComponent/>
+            <AuthProvider>
+                {children}
+            </AuthProvider>
+        </ThemeProvider>
+        <Toaster/>
+        <AudioComponent/>
         </body>
         </html>
     );

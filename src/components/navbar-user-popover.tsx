@@ -2,7 +2,7 @@
 import {Popover, PopoverContent, PopoverTrigger} from "./ui/popover";
 import {Button} from "./ui/button";
 import {ChartBarIncreasing, LogOut as LogOutIcon, User2,} from "lucide-react";
-import {useAuth} from "@/app/auth/_components/context";
+import {useAuth} from "@/app/(auth)/auth/_components/context";
 import Link from "next/link";
 import {logout} from "@/lib/auth/actions";
 import {useState} from "react";

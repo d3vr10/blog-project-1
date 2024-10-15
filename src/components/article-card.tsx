@@ -3,7 +3,7 @@ import {useEffect, useRef, useState} from "react";
 import {Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle} from "@/components/ui/card";
 import Image from "next/image";
 import Link from "next/link";
-import Skeleton from "@/app/articles/_components/card-skeleton";
+import Skeleton from "@/app/(root)/articles/_components/card-skeleton";
 
 export default function Component({article}) {
     const [loading, setLoading] = useState(true);
