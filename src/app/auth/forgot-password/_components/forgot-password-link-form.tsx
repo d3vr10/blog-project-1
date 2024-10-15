@@ -14,12 +14,16 @@ import {Button} from "@/components/ui/button";
 import Link from "next/link";
 import {Input} from "@/components/ui/input";
 import {AlertCircle, AtSign, ChevronDown, User} from "lucide-react";
-import {z} from "zod";
+import {literal, z} from "zod";
 
 const forgotEmailSchema = z.object({
-    email: z.string().email().nullable(),
-    username: z.string().optional(),
-}).refine((value) => value.email || value.username, {message: "At least one of both fields must be filled out"});
+    email: z.union([z.string().email(), z.literal("")]),
+    username: z.union([z.string().min(8).regex(/^[a-z0-9_-]+$/i), z.literal("")]),
+    atLeastOne: z.unknown().optional(),
+}).refine((value) => value.email || value.username, {
+    message: "At least one of both fields must be filled out",
+    path: ["atLeastOne"]
+});
 type ForgotEmailSchema = z.infer<typeof forgotEmailSchema>
 
 type ResetMethod = "email" | "username"
@@ -104,9 +108,10 @@ const CustomInput = ({
 export default function ForgotPasswordLinkForm() {
     const [resetMethod, setResetMethod] = useState<ResetMethod>("email")
     const [sentEmail, setSentEmail] = useState(false);
-    const formRef = useRef(null);
+    const formRef = useRef<null | HTMLFormElement>(null);
+    const submitBtnRef = useRef<null | HTMLButtonElement>(null)
     const defaultValues = {
-        email: null,
+        email: "",
         username: "",
     }
     const form = useForm<ForgotEmailSchema>({
@@ -152,7 +157,11 @@ export default function ForgotPasswordLinkForm() {
                         <CardDescription>Enter your email or username to reset your password</CardDescription>
                     </CardHeader>
                     <Form {...form}>
-                        <form onSubmit={handleSubmit(onSubmit)} ref={formRef}>
+                        <form onSubmit={handleSubmit(onSubmit)} ref={formRef} onKeyUp={(e)=>{
+                            e.preventDefault()
+                            if (e.key.toUpperCase() === "ENTER")
+                                submitBtnRef.current?.click()
+                        }}>
                             <CardContent className="space-y-4">
                                 <div className="space-y-2">
                                     <FormLabel htmlFor="resetInput">Email or Username</FormLabel>
@@ -165,24 +174,27 @@ export default function ForgotPasswordLinkForm() {
                             </CardContent>
                             <CardFooter>
                                 <LoaderButton
+                                    ref={submitBtnRef}
                                     isSubmitting={formState.isSubmitting}
                                     onClick={() => {
-                                        const set = new Set(Object.keys(defaultValues)).difference(new Set([resetMethod]))
-                                        const resetProps = Array.from(set).reduce((acc, key) => {
-                                            acc[key] = ""; // Assigning default value of ""
-                                            return acc;
-                                        }, {});
-                                        for (const key of set) {
-                                            resetField(key, {
-                                                defaultValue: defaultValues[key] as string,
-                                            });
+                                        if (resetMethod === "username") {
+                                            resetField("email")
+                                        } else if (resetMethod === "email") {
+                                            resetField("username")
                                         }
-                                        handleSubmit(onSubmit)()
+                                        formRef.current.requestSubmit()
                                     }}
                                     type={"button"}
                                 >
                                     Send Reset Link
                                 </LoaderButton>
+
+                                {formState.errors.atLeastOne && (
+                                    <p className="text-sm font-medium text-destructive flex items-center">
+                                        <AlertCircle className="h-4 w-4 mr-2"/>
+                                        {formState.errors.atLeastOne.message}
+                                    </p>
+                                )}
                             </CardFooter>
                         </form>
                     </Form> </Card>)
