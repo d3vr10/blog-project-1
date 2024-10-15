@@ -1,19 +1,21 @@
 "use client";
 
 import {Button} from "./ui/button";
+import React from "react";
 
-export default function LoaderButton({isSubmitting, children, onClick, type}: {
+const LoaderButton = React.forwardRef(({isSubmitting, children, onClick, type}: {
     isSubmitting: boolean,
     children?: React.ReactNode,
     onClick?: () => void,
     type?: "button" | "submit"
-}) {
+}, ref) => {
     return (
         <Button
-            type={type? type : "submit"}
+            type={type ? type : "submit"}
             disabled={isSubmitting}
             className="relative"
             onClick={onClick}
+            ref={ref}
         >
             <span
                 className={`inset-0 flex items-center justify-center transition-opacity duration-200 ${isSubmitting ? 'opacity-0' : 'opacity-100'}`}>
@@ -25,4 +27,6 @@ export default function LoaderButton({isSubmitting, children, onClick, type}: {
             </span>
         </Button>
     )
-}
+})
+
+export default LoaderButton;

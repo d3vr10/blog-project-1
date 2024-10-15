@@ -117,6 +117,7 @@ const CustomKeyInput = ({
 
 export default function SigninForm({setOpen}: { setOpen: Dispatch<any> }) {
     const formRef = useRef<HTMLFormElement | null>(null)
+    const submitBtnRef = useRef<HTMLButtonElement | null>(null)
     const {auth, setAuth} = useAuth()
     const [signInMethod, setSignInMethod] = useState<"username" | "email">("username")
     const router = useRouter()
@@ -163,7 +164,11 @@ export default function SigninForm({setOpen}: { setOpen: Dispatch<any> }) {
     }
     return (
         <Form {...form}>
-            <form className="flex flex-col gap-y-4" onSubmit={form.handleSubmit(onSubmit)} ref={formRef}>
+            <form className="flex flex-col gap-y-4" onSubmit={form.handleSubmit(onSubmit)} ref={formRef} onKeyUp={(e)=>{
+                e.preventDefault()
+                if (e.key.toUpperCase() === "ENTER")
+                    submitBtnRef.current?.click()
+            }}>
                 <CustomKeyInput signInMethod={signInMethod} setSignInMethod={setSignInMethod}/>
                 <div className={"relative"}>
                     <Button
@@ -193,6 +198,7 @@ export default function SigninForm({setOpen}: { setOpen: Dispatch<any> }) {
                 </div>
                 <LoaderButton
                     type={"submit"}
+                    ref={submitBtnRef}
                     isSubmitting={formState.isSubmitting}
                     onClick={()=>{
                         if (signInMethod === "username") {
