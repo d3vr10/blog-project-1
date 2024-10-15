@@ -5,7 +5,8 @@ import {eq, not} from "drizzle-orm";
 import db from "../db";
 import {articleSchema} from "../db/schemas";
 import {createSchemaServer, editSchemaServer} from "../schemas/article";
-import {slugify} from "../utils";
+import {slugify } from "../utils";
+import {slugifyArticle} from "@/lib/server-utils";
 import {removeArticleImage, retrieveFileContents, storeFile} from "@/lib/fs/file-storage";
 import {verify} from "@/lib/auth/jwt";
 import {cookies} from "next/headers";
@@ -39,7 +40,7 @@ export async function createArticle(values: {
             content,
             excerpt,
             featuredImage: path,
-            slug: slugify(title),
+            slug: await slugifyArticle(title),
             userId: values.userId,
         })
         return {

@@ -16,7 +16,7 @@ export default async function Page({params: {slug}}: { params: { slug: string } 
     if (!joinedResult) {
         notFound()
     }
-    let key = joinedResult.article.featuredImage? joinedResult.article.featuredImage
+    let key = joinedResult.article.featuredImage ? joinedResult.article.featuredImage
             .replace("^/+", "")
             .replace("/+$", "")
         : undefined //coercing to aws-like key format
@@ -37,7 +37,8 @@ export default async function Page({params: {slug}}: { params: { slug: string } 
                         {key ?
                             <Image src={"/api/articles/featured-image/" + encodeURIComponent(key)}
                                    width={1280}
-                                   height={720} alt={"Article's portrait"} className={"max-w-full h-auto aspect-video block object-cover"} /> : ""}
+                                   height={720} alt={"Article's portrait"}
+                                   className={"max-w-full h-auto aspect-video block object-cover"}/> : ""}
                     </div>
                     <blockquote
                         className={"border-l-2 border-muted text-muted italic pl-2 py-2  mx-auto mb-6"}>
@@ -50,4 +51,11 @@ export default async function Page({params: {slug}}: { params: { slug: string } 
             </article>
         </div>
     )
-} 
+}
+
+export async function generateStaticParams() {
+    const articles = await db.query.articleSchema.findMany()
+    return articles.map((article) => ({
+        slug: article.slug,
+    }))
+}

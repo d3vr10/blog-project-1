@@ -6,8 +6,8 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 
-export function slugify(title: string) {
-    return title
+export function slugify(chars: string) {
+    return chars
         .toString()
         .toLowerCase()
         .trim()
