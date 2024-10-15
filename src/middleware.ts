@@ -11,6 +11,11 @@ const protectedRoutes = [
     "/dashboard/edit",
 ]
 export default withContext(allowedKeys, async (req, setContext) => {
+    //Add current url path to request headers
+    const newHeaders = new Headers(req.headers)
+    newHeaders.set("x-current-path", req.nextUrl.pathname)
+    NextResponse.next({headers: newHeaders})
+
     if (protectedRoutes.includes(req.nextUrl.pathname)) {
         const url = new URL("/api/validate-session", req.nextUrl.origin)
         const validationResult = await fetch(url, {

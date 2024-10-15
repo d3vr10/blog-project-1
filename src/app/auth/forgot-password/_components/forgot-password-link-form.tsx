@@ -5,7 +5,6 @@ import LoaderButton from "@/components/loader-button";
 import {Form, FormField, FormItem, FormLabel} from "@/components/ui/form";
 import {clsx} from "clsx";
 import {useEffect, useRef, useState} from "react";
-import {useForgotPasswordEmail} from "@/app/auth/forgot-password/_components/context";
 import {SubmitHandler, useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
 import {generateForgotPasswordToken} from "@/app/auth/forgot-password/actions";
@@ -14,13 +13,13 @@ import {Button} from "@/components/ui/button";
 import Link from "next/link";
 import {Input} from "@/components/ui/input";
 import {AlertCircle, AtSign, ChevronDown, User} from "lucide-react";
-import {literal, z} from "zod";
+import {z} from "zod";
 
 const forgotEmailSchema = z.object({
     email: z.union([z.string().email(), z.literal("")]),
     username: z.union([z.string().min(8).regex(/^[a-z0-9_-]+$/i), z.literal("")]),
     atLeastOne: z.unknown().optional(),
-}).refine((value) => value.email || value.username, {
+}).refine((value) => value.email.length > 0 || value.username.length > 0, {
     message: "At least one of both fields must be filled out",
     path: ["atLeastOne"]
 });
@@ -157,7 +156,7 @@ export default function ForgotPasswordLinkForm() {
                         <CardDescription>Enter your email or username to reset your password</CardDescription>
                     </CardHeader>
                     <Form {...form}>
-                        <form onSubmit={handleSubmit(onSubmit)} ref={formRef} onKeyUp={(e)=>{
+                        <form onSubmit={handleSubmit(onSubmit)} ref={formRef} onKeyUp={(e) => {
                             e.preventDefault()
                             if (e.key.toUpperCase() === "ENTER")
                                 submitBtnRef.current?.click()
