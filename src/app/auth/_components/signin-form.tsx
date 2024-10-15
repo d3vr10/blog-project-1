@@ -20,13 +20,21 @@ import {AlertCircle, AtSign, ChevronDown, KeyIcon, User} from "lucide-react";
 import {clsx} from "clsx";
 
 const authSchema = z.object({
-    username: z.string().min(4),
-    email: z.string().email().optional(),
+    username: z.union([
+        z.string().min(4).regex(
+            /^[a-z0-9_-]+$/i,
+            {message: "Only alphanumeric characters allowed!"}
+        ),
+        z.literal("")
+    ]),
+    email: z.union([z.string().email(), z.literal("")]),
     password: z.string().min(8),
-}).refine(data => data.email || data.password, {
-    message: "At least one of email or password must be supplied",
-    path: ["email", "password"], // Specify which fields to attach the error to
-});
+    atLeastOne: z.unknown().optional(),
+}).refine((values) => values.username.length > 0 || values.email.length > 0,
+    {
+        message: "You must provide one of both: username or email",
+        path: ["atLeastOne"],
+    })
 
 type AuthSchemaType = z.infer<typeof authSchema>
 
@@ -65,7 +73,7 @@ const CustomKeyInput = ({
                     </DropdownMenuItem>
                 </DropdownMenuContent>
             </DropdownMenu>
-            <FormField name={"email"} render={({field, fieldState}) => (
+            <FormField name={"email"} render={({field, fieldState, formState}) => (
                 <FormItem className={clsx({
                     "hidden": signInMethod === "username",
                 })}>
@@ -184,25 +192,24 @@ export default function SigninForm({setOpen}: { setOpen: Dispatch<any> }) {
                     />
                 </div>
                 <LoaderButton
-                    type={"button"}
-                    onClick={() => {
-                        const signInValue = form.getValues()[signInMethod]
+                    type={"submit"}
+                    isSubmitting={formState.isSubmitting}
+                    onClick={()=>{
                         if (signInMethod === "username") {
-                            resetField("email", {
-                                defaultValue: defaultValues.email,
-                            })
-                        } else {
-                            resetField("username", {
-                                defaultValue: defaultValues.username,
-                            })
+                            resetField("email")
+                        } else if (signInMethod === "email") {
+                            resetField("username")
                         }
-
                         formRef.current?.requestSubmit()
                     }}
-                    isSubmitting={formState.isSubmitting}
                 />
 
-                {errors?.root ? <div className="text-sm text-red-800 text-center">{errors.root.message}</div> : ""}
+                {formState.errors.atLeastOne && (
+                    <p className="text-sm font-medium text-destructive flex items-center">
+                        <AlertCircle className="h-4 w-4 mr-2"/>
+                        {formState.errors.atLeastOne.message}
+                    </p>
+                )}
 
                 <div className="text-center"><Link href={"/auth/forgot-password"} onClick={() => setOpen(false)}
                                                    className="text-blue-400 text-sm">Forgot password?</Link></div>
