@@ -29,7 +29,7 @@ export function withContext(
     middleware: (
         req: NextRequest,
         setContext: (key: string, value: string) => void,
-    ) => Promise<void | NextResponse> | void | NextResponse,
+    ) => Promise<void | NextResponse>,
 ) {
     const contextItems: string[] = []
     for (const key of allowedRawKeys) {
@@ -54,7 +54,7 @@ export function withContext(
             else throw new Error(`Key "${rawKey}" is not included in the allowed key argument list`)
         }
 
-        let res = await Promise.resolve(middleware(req, setContext)) || NextResponse.next()
+        let res = await middleware(req, setContext) || NextResponse.next()
 
         if (context.length === 0) {
             return res

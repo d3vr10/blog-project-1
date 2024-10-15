@@ -6,7 +6,7 @@ import db from "../db";
 import {articleSchema} from "../db/schemas";
 import {createSchemaServer, editSchemaServer} from "../schemas/article";
 import {slugify} from "../utils";
-import {removeArticleImage, removeFileContents, retrieveFileContents, storeFile} from "@/lib/fs/file-storage";
+import {removeArticleImage, retrieveFileContents, storeFile} from "@/lib/fs/file-storage";
 import {verify} from "@/lib/auth/jwt";
 import {cookies} from "next/headers";
 
@@ -132,7 +132,7 @@ export async function editArticle(values: {
 
         } else if (featuredImage === null && oldArticle.featuredImage) {
             path = null
-            await removeFileContents(oldArticle.featuredImage)
+            removeArticleImage(oldArticle.featuredImage)
         }
         const article = await db.update(articleSchema)
             .set({title: title, content: content, excerpt: excerpt, featuredImage: path, slug: slugify(title)})

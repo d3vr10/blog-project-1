@@ -1,7 +1,5 @@
-import {NextRequest, NextResponse} from "next/server";
-import { withContext } from "./lib/middleware/pass-context";
-import { validateSession } from "@/lib/auth/validate/actions";
-import {redirect} from "next/navigation";
+import {NextResponse} from "next/server";
+import {withContext} from "./lib/middleware/pass-context";
 
 const allowedKeys: string[] = ["hello"]
 
@@ -12,9 +10,8 @@ const protectedRoutes = [
 ]
 export default withContext(allowedKeys, async (req, setContext) => {
     //Add current url path to request headers
-    const newHeaders = new Headers(req.headers)
+    const newHeaders = new Headers()
     newHeaders.set("x-current-path", req.nextUrl.pathname)
-    NextResponse.next({headers: newHeaders})
 
     if (protectedRoutes.includes(req.nextUrl.pathname)) {
         const url = new URL("/api/validate-session", req.nextUrl.origin)
@@ -28,4 +25,6 @@ export default withContext(allowedKeys, async (req, setContext) => {
             return NextResponse.redirect(req.nextUrl.origin)
         }
     }
+
+    return NextResponse.next({headers: newHeaders})
 });

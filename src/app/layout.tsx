@@ -7,6 +7,7 @@ import {Toaster} from "@/components/ui/toaster";
 import AuthProvider from "@/app/auth/_components/context";
 import AudioComponent from "@/components/audio";
 import Footer from "@/app/_components/footer";
+import {getServerRequestPathname} from "@/lib/server-utils";
 
 
 const geistSans = localFont({
@@ -52,7 +53,7 @@ export default function RootLayout({
                         <main className="p-4 container flex-1 self-center">
                             {children}
                         </main>
-                        <Footer/>
+                        { !getServerRequestPathname().startsWith("/auth")? <Footer/> : "" }
                     </div>
                 </AuthProvider>
             </ThemeProvider>
