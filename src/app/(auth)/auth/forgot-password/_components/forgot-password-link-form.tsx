@@ -147,8 +147,7 @@ export default function ForgotPasswordLinkForm() {
         setSentEmail(true)
     }
     return (
-        <div
-            className={"absolute top-1/2 border-2 rounded-lg p-6 flex flex-col gap-y-4 left-1/2 -translate-y-1/2 -translate-x-1/2"}>
+        <>
             {!sentEmail && (
                 <Card className="w-full mx-auto">
                     <CardHeader>
@@ -218,6 +217,6 @@ export default function ForgotPasswordLinkForm() {
                 </>)
             }
 
-        </div>
+        </>
     )
 }
