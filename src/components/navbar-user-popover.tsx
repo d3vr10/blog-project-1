@@ -8,9 +8,9 @@ import {logout} from "@/lib/auth/actions";
 import {useState} from "react";
 
 
-export default function NavbarUserPopover(  ) {
-    const [ open, setOpen ] = useState(false);
-    const { auth, setAuth } = useAuth()
+export default function NavbarUserPopover() {
+    const [open, setOpen] = useState(false);
+    const {auth, setAuth} = useAuth()
     const handleLogout = async () => {
         await logout()
         setOpen(false);
@@ -18,8 +18,9 @@ export default function NavbarUserPopover(  ) {
     }
     return (
         <Popover open={open} onOpenChange={() => setOpen((state) => !state)}>
-            <PopoverTrigger  asChild>
-                <Button variant="outline" className="w-[105.4px] flex gap-x-1 items-center"><User2 />{auth.username}</Button>
+            <PopoverTrigger asChild>
+                <Button variant="outline" className="w-[105.4px] flex gap-x-1 items-center"><User2/>{auth.username}
+                </Button>
             </PopoverTrigger>
             <PopoverContent className="w-80">
                 <div className="grid gap-4">
@@ -31,10 +32,12 @@ export default function NavbarUserPopover(  ) {
                     </div>
                     <div className="flex flex-col gap-y-3 [&_button]:flex [&_button]:gap-x-2 [&_button]:justify-start">
 
-                        <Link onClick={() => setOpen(false)} className="flex items-center gap-x-4 " href={"/dashboard"}><Button className="">
-                            <ChartBarIncreasing /><span>Dashboard</span>
-                        </Button></Link>
-                        <Button className=" " onClick={ handleLogout}><LogOutIcon />Logout</Button>
+                        <Link onClick={() => setOpen(false)} className="" href={"/dashboard"}>
+                            <Button className="w-full block">
+                                <ChartBarIncreasing/><span>Dashboard</span>
+                            </Button>
+                        </Link>
+                        <Button className=" " onClick={handleLogout}><LogOutIcon/>Logout</Button>
                     </div>
                 </div>
             </PopoverContent>
