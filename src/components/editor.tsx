@@ -1,15 +1,14 @@
 "use client";
 
-import {useCreateBlockNote} from "@blocknote/react";
 import "@blocknote/mantine/style.css"
 import "@blocknote/core/fonts/inter.css"
 import {BlockNoteView} from "@blocknote/mantine";
 import {BlockNoteEditor, PartialBlock} from "@blocknote/core";
 import {cn} from "@/lib/utils";
-import {useEffect, useMemo} from "react";
+import {useMemo} from "react";
 
 interface Editor {
-    initialContent?: string | PartialBlock[],
+    initialContent?: string,
     uploadFile?: (file: File) => Promise<string>,
     className?: string,
     editable?: boolean,
@@ -20,7 +19,7 @@ const Editor: React.FC<Editor> = ({initialContent, uploadFile, className, editab
     const editor = useMemo(() => {
         if (initialContent === "loading")
             return undefined
-        const content = typeof initialContent === "string" ? JSON.parse(initialContent) : initialContent
+        const content =  initialContent ? JSON.parse(initialContent) : undefined
         return BlockNoteEditor.create({
             initialContent: content,
             uploadFile: uploadFile,

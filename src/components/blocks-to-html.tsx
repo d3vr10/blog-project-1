@@ -4,7 +4,7 @@ import {useEffect, useState} from "react";
 
 const BlocksToHTML: React.FC<{ content: string }> = ({content}) => {
     const editor = useCreateBlockNote({
-        initialContent: JSON.parse(content)
+        initialContent: content? JSON.parse(content) : null
     })
     const [html, setHtml] = useState<null | string>(null)
     useEffect(() => {

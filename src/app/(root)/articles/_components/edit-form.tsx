@@ -21,9 +21,12 @@ import {editArticle} from "@/lib/articles/actions";
 import {useToast} from "@/hooks/use-toast";
 import {debounce} from "lodash"
 import {validateSession} from "@/lib/auth/actions";
-import Image from "next/image";
 import {useEffect, useState} from "react";
 import {refreshArticles} from "@/app/actions";
+import Cover from "@/app/(root)/articles/_components/cover";
+import dynamic from "next/dynamic";
+
+const Editor = dynamic(()=>import("@/components/editor"), { ssr: false })
 
 
 export default function EditForm(
@@ -85,8 +88,8 @@ export default function EditForm(
         setFile(file)
 
     }, 5000, {leading: true})
-    const {setError, handleSubmit, control, formState, register} = form
-    const featuredImageFieldProps = register("featuredImage")
+    const {setError, handleSubmit, control, formState, register, watch} = form
+    const featuredImageRef = register("featuredImage")
     const onSubmit: SubmitHandler<EditArticleSchemaClient> = async (values) => {
         const validResult = await validateSession()
         if (validResult.error) {
@@ -106,9 +109,10 @@ export default function EditForm(
                 fileData = new FormData()
                 fileData.set("file", values.featuredImage)
             }
+            const editorContent = localStorage.getItem("editorContent")?? ""
             const editResult = await editArticle({
                 featuredImage: fileData,
-                content: values.content,
+                content: editorContent,
                 excerpt: values.excerpt,
                 title: values.title,
                 slug: slug
@@ -143,6 +147,7 @@ export default function EditForm(
     }
     return (
         <Form {...form}>
+            <Cover fileInputRef={featuredImageRef} watch={watch} fieldState={form.getFieldState("featuredImage")} />
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
                 <h1 className={"text-5xl font-bold"}>Edit Article</h1>
 
@@ -172,52 +177,8 @@ export default function EditForm(
                         }
                     </FormItem>
                 }/>
-                <FormField control={control} name="content" render={({field, fieldState: {error}}) =>
-                    <FormItem>
-                        <FormLabel>{field.name[0].toUpperCase() + field.name.substring(1)}</FormLabel>
-                        <FormControl>
-                            <Textarea {...field} />
-                        </FormControl>
-                        {
-                            error
-                                ? (<FormDescription>Content of the article</FormDescription>)
-                                : <FormMessage/>
-                        }
-                    </FormItem>
-                }/>
-                <FormField control={control} name="featuredImage" render={({field, fieldState: {error}}) =>
-                    <FormItem>
-                        <FormLabel>Imagen de Portada</FormLabel>
-                        <FormControl>
-                            <Input type="file" accept={".jpg,.jpeg,.png"}  {...featuredImageFieldProps} onChange={handleonChangeFile} />
-                        </FormControl>
-                        {
-                            error
-                                ? (<FormDescription>Imagen de Portada</FormDescription>)
-                                : <FormMessage/>
-                        }
-                    </FormItem>
-                }/>
+                <Editor editable={true} />
 
-                <div id={"preview-box"} className={"flex flex-col items-start gap-y-4 w-fit"}>
-                    <h4 className={""}>Preview</h4>
-                    <div className={"border-2 rounded-lg border-solid border-muted w-fit p-4"}>
-                        <div className={"w-[400px] h-[400px] flex flex-col justify-center"}>
-                            { file? (
-                                <>
-                                    <Image src={URL.createObjectURL(file)} height={400} width={400} alt={"Tomate"}/>
-
-
-                                </>
-
-                            ) : ""}
-                        </div>
-                    </div>
-
-                    <Button type={"button"} className={"hover:text-white hover:bg-red-600 self-end border-2 border-red-400 px-4 py-2 rounded-lg transition-colors"} onClick={() => {
-                        setFile(null)
-                    }}>Delete</Button>
-                </div>
 
                 <div className="flex justify-end gap-x-3">
                     <Button type="button" onClick={() => form.reset({
