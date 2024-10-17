@@ -53,7 +53,7 @@ export function rateLimit<T extends (...args: any[]) => any>
             const res = func.constructor.name === "AsyncFunction"
                 ? await func(...args)
                 : func(...args)
-            if (res.status && res.status < 300) {
+            if ((res.status && res.status < 300) || res) {
                 ipDict[ip].count += 1
             }
             return res
@@ -65,7 +65,7 @@ export function rateLimit<T extends (...args: any[]) => any>
             estimatedTimeLeft.getSeconds().toString().padStart(2, "0"),
         ].join(":")
 
-        return {
+        const res = {
             status: 429,
             error: {
                 message: `Maximum attempts exceeded. Please try again in ${formattedTimeLeft} (hours).`,
@@ -73,5 +73,6 @@ export function rateLimit<T extends (...args: any[]) => any>
             }
         }
 
+        return res.status? Response.json(res) : res
     }
 }
