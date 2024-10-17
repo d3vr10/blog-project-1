@@ -58,16 +58,11 @@ export function rateLimit<T extends (...args: any[]) => any>
             }
             return res
         }
-        // const estimatedTimeLeft = new Date((options.resetAfter as number) - Date.now() - ipDict[ip].registeredAt)
-        // const formattedTimeLeft = [
-        //     estimatedTimeLeft.getHours().toString().padStart(2, "0"),
-        //     estimatedTimeLeft.getMinutes().toString().padStart(2, "0"),
-        //     estimatedTimeLeft.getSeconds().toString().padStart(2, "0"),
-        // ].join(":")
+
         const elapsedTime = now - ipDict[ip].registeredAt; // Time since first attempt
         const remainingTime = Math.max(0, (options.resetAfter as number) - elapsedTime); // Ensure non-negative
 
-        const hours = Math.floor((remainingTime / (1000 * 60 * 60)) % 24);
+        const hours = Math.floor(remainingTime / (1000 * 60 * 60));
         const minutes = Math.floor((remainingTime / (1000 * 60)) % 60);
         const seconds = Math.floor((remainingTime / 1000) % 60);
         const formattedTimeLeft = [hours, minutes, seconds].join(":")
