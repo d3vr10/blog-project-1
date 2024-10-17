@@ -5,7 +5,7 @@ import {eq, not} from "drizzle-orm";
 import db from "../db";
 import {articleSchema} from "../db/schemas";
 import {createSchemaServer, editSchemaServer} from "../schemas/article";
-import {slugify } from "../utils";
+import {slugify} from "../utils";
 import {slugifyArticle} from "@/lib/server-utils";
 import {removeArticleImage, retrieveFileContents, storeFile} from "@/lib/fs/file-storage";
 import {verify} from "@/lib/auth/jwt";
@@ -79,7 +79,7 @@ export async function deleteArticle(slug: string) {
                 }
             }
         if (article.featuredImage) {
-            removeArticleImage(article.featuredImage)
+            await removeArticleImage(article.featuredImage)
         }
         const articles = await db.delete(articleSchema).where(eq(articleSchema.slug, slug)).returning()
         if (articles.length > 0) {
@@ -129,13 +129,13 @@ export async function editArticle(values: {
         if (featuredImage) {
             const {username} = await verify(cookies().get("auth_token")?.value as unknown as string)
             if (oldArticle.featuredImage) {
-                removeArticleImage(oldArticle.featuredImage)
+                await removeArticleImage(oldArticle.featuredImage)
             }
             path = await storeFile({username: username as string, title: oldArticle.title, file: featuredImage})
 
         } else if (featuredImage === null && oldArticle.featuredImage) {
             path = null
-            removeArticleImage(oldArticle.featuredImage)
+            await removeArticleImage(oldArticle.featuredImage)
         }
         const article = await db.update(articleSchema)
             .set({title: title, content: values.content, excerpt: excerpt, featuredImage: path, slug: slugify(title)})
@@ -197,7 +197,7 @@ export async function retrieveFeaturedImage(slug: string) {
     if (article?.featuredImage) {
         const formData = new FormData()
         try {
-            const data = retrieveFileContents(article.featuredImage)
+            const data = await retrieveFileContents(article.featuredImage)
             formData.set("file", new Blob([data]))
             return formData
         } catch (err: any) {

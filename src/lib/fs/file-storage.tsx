@@ -1,6 +1,5 @@
 import * as fs from "node:fs";
 import path from "path";
-import {v7} from "uuid";
 import env from "@/lib/env";
 
 export async function storeFile({file, title, username}: { file: File, title: string, username: string }) {
@@ -8,8 +7,8 @@ export async function storeFile({file, title, username}: { file: File, title: st
         const data = await file.arrayBuffer()
         const key = path.posix.join(username, title, file.name)
         const absoluteDirPath = path.join(process.cwd(), env.ARTICLE_DIR)
-        fs.mkdirSync(path.join(absoluteDirPath, key.split(path.posix.sep).slice(0, 2).join(path.posix.sep)), {recursive: true})
-        fs.writeFileSync(path.join(absoluteDirPath, key), new Uint8Array(data));
+        await fs.promises.mkdir(path.join(absoluteDirPath, key.split(path.posix.sep).slice(0, 2).join(path.posix.sep)), {recursive: true})
+        await fs.promises.writeFile(path.join(absoluteDirPath, key), new Uint8Array(data));
 
         return key
     } catch (err) {
@@ -17,12 +16,15 @@ export async function storeFile({file, title, username}: { file: File, title: st
     }
 }
 
-export function retrieveFileContents(key: string) {
-    return fs.readFileSync(path.join(process.cwd(), env.ARTICLE_DIR, key))
+export function buildArticlePath(key: string) {
+    return path.join(process.cwd(), env.ARTICLE_DIR, key)
+}
+export async function retrieveFileContents(key: string) {
+    return await fs.promises.readFile(buildArticlePath(key))
 }
 
-export function removeArticleImage(key: string) {
-    fs.rmSync(
+export async function removeArticleImage(key: string) {
+    await fs.promises.rm(
         path.join(process.cwd(),
             env.ARTICLE_DIR,
             key.split(path.posix.sep)
@@ -32,6 +34,9 @@ export function removeArticleImage(key: string) {
     )
 }
 
-export function removeUserImageDir(key: string) {
-    fs.rmSync(path.join(process.cwd(), env.ARTICLE_DIR, key.split(path.posix.sep)[0]), {recursive: true, force: true})
+export async function removeUserImageDir(key: string) {
+    await fs.promises.rm(path.join(process.cwd(), env.ARTICLE_DIR, key.split(path.posix.sep)[0]), {
+        recursive: true,
+        force: true
+    })
 }

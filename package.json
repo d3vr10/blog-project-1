@@ -11,6 +11,8 @@
     "db:push": "drizzle-kit push"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.673.0",
+    "@aws-sdk/types": "^3.664.0",
     "@blocknote/core": "^0.16.0",
     "@blocknote/mantine": "^0.16.0",
     "@blocknote/react": "^0.16.0",
