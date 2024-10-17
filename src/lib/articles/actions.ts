@@ -19,13 +19,15 @@ export async function createArticle(values: {
     userId: string,
 }) {
     try {
-        const {title, content, excerpt, featuredImage} = createSchemaServer.parse(values)
+
+        const {title, excerpt, featuredImage} = createSchemaServer.parse(values)
+        const slugifiedTitle = await slugifyArticle(title)
         let path = undefined
         if (featuredImage) {
             const tokenCookie = cookies().get("auth_token")
             if (tokenCookie) {
                 const payload = await verify(tokenCookie.value)
-                path = await storeFile({title, username: payload.username as string, file: featuredImage})
+                path = await storeFile({title: slugifiedTitle, username: payload.username as string, file: featuredImage})
             } else {
                 return {
                     status: 403,
@@ -37,10 +39,10 @@ export async function createArticle(values: {
         }
         await db.insert(articleSchema).values({
             title,
-            content,
+            content: values.content,
             excerpt,
             featuredImage: path,
-            slug: await slugifyArticle(title),
+            slug: slugifiedTitle,
             userId: values.userId,
         })
         return {
@@ -104,7 +106,7 @@ export async function editArticle(values: {
     featuredImage?: FormData | null | undefined,
     slug: string
 }) {
-    const {title, content, excerpt, featuredImage} = editSchemaServer.parse(values)
+    const {title, excerpt, featuredImage} = editSchemaServer.parse(values)
     try {
         const oldArticle = await db.query.articleSchema.findFirst({
             columns: {
@@ -136,7 +138,7 @@ export async function editArticle(values: {
             removeArticleImage(oldArticle.featuredImage)
         }
         const article = await db.update(articleSchema)
-            .set({title: title, content: content, excerpt: excerpt, featuredImage: path, slug: slugify(title)})
+            .set({title: title, content: values.content, excerpt: excerpt, featuredImage: path, slug: slugify(title)})
             .where(eq(articleSchema.slug, values.slug))
             .returning()
         return {

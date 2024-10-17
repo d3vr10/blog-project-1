@@ -22,11 +22,11 @@ import {useToast} from "@/hooks/use-toast";
 import {debounce} from "lodash"
 
 import {validateSession} from "@/lib/auth/actions";
-import {useEffect, useMemo, useTransition} from "react";
+import {useMemo, useTransition} from "react";
 import {refreshArticles} from "@/app/actions";
+import Previsualizer from "@/app/(root)/articles/_components/cover";
 import {createSchemaClient} from "@/lib/schemas/article";
 import dynamic from "next/dynamic";
-import Cover from "@/app/(root)/articles/_components/cover";
 
 export default function CreateForm() {
     const Editor = useMemo(
@@ -39,6 +39,7 @@ export default function CreateForm() {
         mode: "all",
         resolver: zodResolver(createSchemaClient),
         defaultValues: {
+            content: "",
             excerpt: "",
             title: "",
             featuredImage: undefined,
@@ -47,13 +48,11 @@ export default function CreateForm() {
     const onChangeFile = debounce(() => {
 
     }, 5000, {leading: true})
-    const {getValues, watch, setError, handleSubmit, control, formState, register, setValue, getFieldState} = form
+    const {getValues, watch, setError, handleSubmit, control, formState, register, setValue} = form
     const fileRef = register("featuredImage")
     const [ongoing, startTransition] = useTransition()
-    useEffect(() => {
-    }, []);
 
-    const onSubmit: SubmitHandler<CreateArticleSchemaClient> = async ({title, excerpt, featuredImage}) => {
+    const onSubmit: SubmitHandler<CreateArticleSchemaClient> = async ({title, content, excerpt, featuredImage}) => {
         const validResult = await validateSession()
         if (validResult.error) {
             toast({
@@ -68,11 +67,9 @@ export default function CreateForm() {
         if (featuredImage) {
             formData.set("file", featuredImage)
         }
-
-        const editorContent = localStorage.getItem("editorContent")?? ""
         const createResult = await createArticle({
             title,
-            content: editorContent,
+            content,
             excerpt,
             featuredImage: formData,
             userId: validResult.payload.id,
@@ -105,7 +102,6 @@ export default function CreateForm() {
     }
     return (
         <Form {...form}>
-            <Cover watch={watch} fileInputRef={fileRef} fieldState={getFieldState("featuredImage")}/>
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
                 <FormField control={control} name="title" render={({field, fieldState: {error}}) =>
                     <FormItem>
@@ -133,10 +129,53 @@ export default function CreateForm() {
                         }
                     </FormItem>
                 }/>
-                <Editor editable={true} />
+                <FormField control={control} name="content" render={({field, fieldState: {error}}) =>
+                    <FormItem>
+                        <FormLabel>Content</FormLabel>
+                        <FormControl>
+                            <Textarea {...field} />
+                        </FormControl>
+                        {
+                            error
+                                ? (<FormDescription>Content of the article</FormDescription>)
+                                : <FormMessage/>
+                        }
+                    </FormItem>
+                }/>
+                <FormField control={control} name="featuredImage" render={({field, fieldState: {error}}) =>
+                    <FormItem>
+                        <FormLabel>Imagen de Portada</FormLabel>
+                        <FormControl>
+                            <Input type="file" accept={".jpg,.jpeg,.png"} {...fileRef} />
+                        </FormControl>
+                        {/*{*/}
+                        {/*    error*/}
+                        {/*        ? (<FormDescription>Portrait of the article</FormDescription>)*/}
+                        {/*        : <FormMessage />*/}
+                        {/*}*/}
+                        <FormMessage/>
+                    </FormItem>
+                }/>
+                <div className={"flex flex-col items-start w-fit"}>
+                    <div
+                        className={"border-2 rounded-lg p-4 w-[300px] h-[300px] flex flex-col items-center justify-center"}>
+                        <Previsualizer watch={watch}/>
+                    </div>
+                    <Button
+                        type={"button"}
+                        className={"border-2 border-red-400 hover:bg-red-600 transition-colors hover:text-white mt-2 self-end"}
+                        onClick={() => setValue("featuredImage", null, {
+                            shouldDirty: true,
+                            shouldTouch: true,
+                            shouldValidate: true,
+                        })}>
+                        Delete
+                    </Button>
+                </div>
                 <div className="flex justify-end gap-x-4">
                     <Button type="reset" onClick={() => form.reset({
                         title: "",
+                        content: "",
                         excerpt: "",
                         featuredImage: undefined,
                     })}>Clear</Button>

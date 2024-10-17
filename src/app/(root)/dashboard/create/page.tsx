@@ -3,7 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 
 export default async function Page() {
     return (
-        <div className="w-1/2 mx-auto">
+        <div className="container mx-auto">
             
             <Card>
                 <CardHeader>

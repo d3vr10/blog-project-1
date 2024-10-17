@@ -2,16 +2,20 @@ import db from "@/lib/db";
 import {articleSchema, userSchema} from "@/lib/db/schemas";
 import {eq} from "drizzle-orm";
 import {notFound} from "next/navigation";
-import article from "@/lib/db/schemas/article";
 import Image from "next/image"
 import ClientDate from "@/app/(root)/articles/_components/client-date";
 import {Badge} from "@/components/ui/badge";
+import env from "@/lib/env"
+import dynamic from "next/dynamic";
+
+const BlocksToHTML = dynamic(() => import("@/components/blocks-to-html"), {ssr: false})
 
 export default async function Page({params: {slug}}: { params: { slug: string } }) {
     const [joinedResult] = await db.select()
         .from(articleSchema)
         .innerJoin(userSchema, eq(userSchema.id, articleSchema.userId))
         .where(eq(articleSchema.slug, slug))
+
 
     if (!joinedResult) {
         notFound()
@@ -20,6 +24,7 @@ export default async function Page({params: {slug}}: { params: { slug: string } 
             .replace("^/+", "")
             .replace("/+$", "")
         : undefined //coercing to aws-like key format
+
     return (
 
         <div className={"container mx-auto"}>
@@ -32,20 +37,16 @@ export default async function Page({params: {slug}}: { params: { slug: string } 
                         <span><ClientDate/></span>
                     </div>
                 </div>
-                <div className={"xl:w-4/5 "}>
-                    <div className={"border-2 aspect-video mb-6 w-full h-auto"}>
-                        {key ?
-                            <Image src={"/api/articles/featured-image/" + encodeURIComponent(key)}
-                                   width={1280}
-                                   height={720} alt={"Article's portrait"}
-                                   className={"max-w-full h-auto aspect-video block object-cover"}/> : ""}
+                <div className={"xl:w-5/5 "}>
+                    <div className={"border-2 relative aspect-video mb-6 w-full h-auto"}>
+                        <Image src={new URL(`/api/articles/featured-image/` + key, env.NEXT_PUBLIC_SITE_URL).href} sizes={"w-full"} fill alt={"Cover image"} className={"object-cover"}/>
                     </div>
                     <blockquote
-                        className={"border-l-2 border-muted text-muted italic pl-2 py-2  mx-auto mb-6"}>
+                        className={"border-l-2 border-muted  italic pl-2 py-2  mx-auto mb-6"}>
                         {joinedResult.article.excerpt}
                     </blockquote>
                     <div className={"text-md"}>
-                        {joinedResult.article.content}
+                        <BlocksToHTML content={joinedResult.article.content}/>
                     </div>
                 </div>
             </article>
