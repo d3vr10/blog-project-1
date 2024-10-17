@@ -1,8 +1,9 @@
 import {NextRequest, NextResponse} from "next/server";
+import {rateLimit} from "@/lib/server-utils";
 
-export  async function GET (req: NextRequest) {
+export const GET = rateLimit((req: NextRequest) => {
     return NextResponse.json({
-        searchParams: req.nextUrl.searchParams,
-        theNumber: Math.random(),
+        test: "true",
     })
-}
+})
+
