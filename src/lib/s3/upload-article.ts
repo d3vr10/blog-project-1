@@ -6,6 +6,8 @@ export const s3Client = env.S3_ACCESS_KEY_ID
     && env.S3_SECRET_ACCESS_KEY
     && new S3Client({
         forcePathStyle: true,
+        endpoint: "http://localhost:9000",
+        region: "us-east",
         credentials: {
             accessKeyId: env.S3_ACCESS_KEY_ID,
             secretAccessKey: env.S3_SECRET_ACCESS_KEY,

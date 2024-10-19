@@ -1,19 +1,33 @@
-import {rateLimit} from "@/lib/server-utils";
+import {s3Client} from "@/lib/s3/upload-article";
+import {GetObjectCommand} from "@aws-sdk/client-s3";
+import env from "@/lib/env";
 
+export async function GET(req: Request) {
+    // const res = await downloadImage([user, title, filename].join("/"))
+    const res = await downloadImage({Key: "turnout.jpg", Bucket: "tmp"})
+    return new Response(res.body, {
+        headers: {...res.headers},
+        status: 200,
+    })
+}
 
-export const GET = rateLimit(async (req: Request) => {
-    const formData = await req.formData()
-    const file = formData.get("file") as unknown as File | null
-    if (!file) {
-        return Response.json({
-            status: 429,
-            error: {
-                message: "File not found. Terminating"
-            }
-        }, {status: 429})
+async function downloadImage({
+                                 Key,
+                                 Bucket,
+                             }: {
+    Key: string,
+    Bucket: string,
+}) {
+    const getCommand = new GetObjectCommand({
+        Key,
+        Bucket,
+    })
+    const res = await s3Client?.send(getCommand)
+    return {
+        body: res.Body.transformToWebStream(),
+        headers: {
+            "Content-Length": res.ContentLength,
+            "Content-Type": res.ContentType,
+        }
     }
-    const buffer = Buffer.from(await file.arrayBuffer())
-    const effectiveFilename = file.name.replace("", "_")
-
-
-}, {})
+}
