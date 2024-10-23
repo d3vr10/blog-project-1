@@ -10,29 +10,32 @@ import {
     FormItem,
     FormLabel,
     FormMessage
-} from "../../../../components/ui/form";
-import {Input} from "../../../../components/ui/input";
-import {Textarea} from "../../../../components/ui/textarea";
-import {Button} from "../../../../components/ui/button";
-import LoaderButton from "../../../../components/loader-button";
+} from "@/components/ui/form";
+import {Input} from "@/components/ui/input";
+import {Textarea} from "@/components/ui/textarea";
+import {Button} from "@/components/ui/button";
+import LoaderButton from "@/components/loader-button";
 import {useRouter} from "next/navigation";
 import {CreateArticleSchemaClient,} from "@/lib/schemas/article";
 import {createArticle} from "@/lib/articles/actions";
 import {useToast} from "@/hooks/use-toast";
 import {debounce} from "lodash"
-
 import {validateSession} from "@/lib/auth/actions";
-import {useEffect, useMemo, useTransition} from "react";
+import {useEffect, useMemo, useRef, useTransition} from "react";
 import {refreshArticles} from "@/app/actions";
 import {createSchemaClient} from "@/lib/schemas/article";
 import dynamic from "next/dynamic";
 import Cover from "@/app/(root)/articles/_components/cover";
+import {commitEditorMedia} from "@/lib/editor";
+import {slugify} from "@/lib/utils";
+import {BlockNoteEditor} from "@blocknote/core";
 
 export default function CreateForm() {
     const Editor = useMemo(
         () => dynamic(() => import("@/components/editor"), {ssr: false}),
         [],
     )
+    const editorRef = useRef<null | BlockNoteEditor>(null)
     const router = useRouter()
     const {toast} = useToast()
     const form = useForm<CreateArticleSchemaClient>({
@@ -69,7 +72,12 @@ export default function CreateForm() {
             formData.set("file", featuredImage)
         }
 
-        const editorContent = localStorage.getItem("editorContent")?? ""
+        const mvRes = await commitEditorMedia(editorRef.current as BlockNoteEditor, {
+            username: validResult.payload.username,
+            slug: slugify(title),
+        })
+
+        const editorContent = localStorage.getItem("editorContent") ?? null
         const createResult = await createArticle({
             title,
             content: editorContent,
@@ -99,8 +107,8 @@ export default function CreateForm() {
             description: "New article has been created",
         })
 
-        await refreshArticles()
         router.push("/")
+        await refreshArticles()
 
     }
     return (
@@ -133,7 +141,7 @@ export default function CreateForm() {
                         }
                     </FormItem>
                 }/>
-                <Editor editable={true} />
+                <Editor editable={true} editorRef={editorRef}/>
                 <div className="flex justify-end gap-x-4">
                     <Button type="reset" onClick={() => form.reset({
                         title: "",

@@ -6,6 +6,15 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 
+export function isInstance(object: any, ...classes: any[]) {
+    for (const class_ of classes) {
+        if (object instanceof class_)
+            return true
+    }
+    return false
+}
+
+
 export function slugify(chars: string) {
     return chars
         .toString()
@@ -17,16 +26,4 @@ export function slugify(chars: string) {
         .replace(/\-\-+/g, '-') // Replace multiple - with single -
         .replace(/^-+/, '') // Trim - from start of text
         .replace(/-+$/, ''); // Trim - from end of text
-}
-
-export function objectsKeyIntersectionDiff(object1: any, object2: any) {
-    const diff: any = {}
-    Object.keys(object1).forEach(key => {
-        if (object1[key] !== object2[key]) {
-            diff[key] = [object1[key], object2[key]];
-        }
-    })
-    if (Object.keys(diff).length === 0)
-        return null
-    return diff
 }
