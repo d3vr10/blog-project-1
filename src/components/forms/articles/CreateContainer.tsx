@@ -19,7 +19,7 @@ import CreateComponent from "@/components/forms/articles/CreatePresentation";
 export default function CreateContainer() {
 
     const Editor = useMemo(
-        () => dynamic(() => import("@/components/forms/articles/editor/editor"), {ssr: false}),
+        () => dynamic(() => import("@/components/forms/articles/editor/Editor"), {ssr: false}),
         [],
     )
     const editorRef = useRef<null | BlockNoteEditor>(null)

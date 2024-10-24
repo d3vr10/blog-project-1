@@ -1,9 +1,9 @@
-import {buildArticlePath, retrieveFileContents} from "@/lib/fs/file-storage";
+import {buildArticlePath} from "@/lib/fs/file-storage";
 import path from "path"
-import {iteratorToReadableStream, nodeStreamToGenerator, streamFile} from "@/lib/streams/streams";
+import {streamFile} from "@/lib/streams/streams";
 import fs from "node:fs";
 
-export async function GET(req, {params: {path: encodedPath}}: { params: { path: string[] } }) {
+export async function GET(req: Request, {params: {path: encodedPath}}: { params: { path: string[] } }) {
     try {
         encodedPath[2] = decodeURIComponent(encodedPath[2])
         const key = encodedPath.join("/")

@@ -13,7 +13,7 @@ import {cookies} from "next/headers";
 
 export async function createArticle(values: {
     title: string,
-    content?: string,
+    content: string | null,
     excerpt: string,
     featuredImage?: FormData,
     userId: string,

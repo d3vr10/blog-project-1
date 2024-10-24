@@ -1,5 +1,5 @@
 import type {UseFormRegisterReturn} from "react-hook-form";
-import {RefObject} from "react";
+import {MutableRefObject, RefObject} from "react";
 import {ColumnDef} from "@tanstack/react-table";
 
 export interface rateLimitOptions {
@@ -13,7 +13,7 @@ export interface Editor {
     className?: string,
     editable?: boolean,
     onChange?: () => void,
-    editorRef?: RefObject<any>,
+    editorRef?: MutableRefObject<any>,
 }
 
 export interface Cover {

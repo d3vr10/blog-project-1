@@ -3,9 +3,9 @@ import {useEffect, useRef, useState} from "react";
 import {Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle} from "@/components/ui/card";
 import Image from "next/image";
 import Link from "next/link";
-import Skeleton from "@/app/(root)/articles/_components/card-skeleton";
+import Skeleton from "@/components/article/CardSkeleton";
 
-export default function ArticleCard({article}) {
+export default function ArticleCard({article}: { article: any }) {
     const [loading, setLoading] = useState(true);
     const [url, setUrl] = useState<string | undefined>(undefined);
     const [show, setShow] = useState<boolean>(false)
@@ -25,7 +25,7 @@ export default function ArticleCard({article}) {
                 fileURL = URL.createObjectURL(blob)
                 setUrl(fileURL)
             }
-        } catch (err: unknown) {
+        } catch (err: any) {
         } finally {
             setShow(true)
         }
@@ -35,13 +35,13 @@ export default function ArticleCard({article}) {
     }, [])
 
     if (!show) {
-        return <Skeleton />
+        return <Skeleton/>
     }
 
     return (
         <div>
 
-            <Card >
+            <Card>
                 <CardHeader>
                     <Image src={url ? url : "/images/not-found.jpg"} width={300}
                            height={300}

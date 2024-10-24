@@ -5,12 +5,12 @@ import {Input} from "@/components/ui/input";
 import {Textarea} from "@/components/ui/textarea";
 import {Button} from "@/components/ui/button";
 import LoaderButton from "@/components/ui/loader-button";
-import Cover from "@/app/(root)/articles/_components/cover-container";
+import Cover from "@/components/forms/articles/cover/CoverContainer";
 import {ComponentType, RefObject} from "react";
 import {CreateArticleSchemaClient} from "@/lib/schemas/article";
 import {SubmitHandler, UseFormRegisterReturn, UseFormReturn} from "react-hook-form";
 import {BlockNoteEditor} from "@blocknote/core";
-import type Editor from "@/components/forms/articles/editor/editor"
+import type Editor from "@/components/forms/articles/editor/Editor"
 
 export default function CreateComponent({onSubmit, form, editorRef, fileRef, Editor}: {
     onSubmit: SubmitHandler<CreateArticleSchemaClient>,

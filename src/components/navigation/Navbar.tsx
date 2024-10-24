@@ -5,7 +5,7 @@ import {AuthDialog} from "@/app/(auth)/auth/_components/auth-dialog";
 import ToggleThemeDropdown from "../ui/toggle-theme-dropdown";
 import {useAuth} from "@/app/(auth)/auth/_components/context";
 import Link from "next/link";
-import NavbarUserPopover from "./navbar-user-popover";
+import NavbarUserPopover from "./NavbarUserPopover";
 import {Skeleton} from "@/components/ui/skeleton";
 
 export default function Navbar() {

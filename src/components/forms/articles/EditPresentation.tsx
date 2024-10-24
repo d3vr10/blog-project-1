@@ -8,7 +8,8 @@ import {Button} from "../../ui/button";
 import LoaderButton from "../../ui/loader-button";
 import {EditArticleSchemaClient} from "@/lib/schemas/article";
 import {ComponentType} from "react";
-import Cover from "@/app/(root)/articles/_components/cover";
+import Cover from "@/components/forms/articles/cover/CoverContainer";
+import type Editor from "@/components/forms/articles/editor/Editor";
 
 
 export default function EditComponent(
@@ -22,7 +23,7 @@ export default function EditComponent(
         featuredImageRef: UseFormRegisterReturn<any>,
         onSubmit: SubmitHandler<EditArticleSchemaClient>,
         form: UseFormReturn<EditArticleSchemaClient>,
-        Editor: ComponentType,
+        Editor: ComponentType<Editor>,
     }
 ) {
     const {watch, control, formState, handleSubmit} = form;

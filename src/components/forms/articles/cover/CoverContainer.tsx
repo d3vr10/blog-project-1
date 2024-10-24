@@ -1,7 +1,7 @@
 "use client";
 
 import {useForm, Controller} from "react-hook-form";
-import CoverPresentation from "./cover-presentation";
+import CoverPresentation from "./CoverPresentation";
 import {type Cover} from "@/types";
 import {useEffect, useState} from "react";
 

@@ -33,7 +33,7 @@ export default function EditContainer(
 ) {
 
     const Editor = useMemo(
-        () => dynamic(() => import("@/components/forms/articles/editor/editor"), {ssr: false}),
+        () => dynamic(() => import("@/components/forms/articles/editor/Editor"), {ssr: false}),
         [],
     )
     const router = useRouter()

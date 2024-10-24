@@ -1,8 +1,6 @@
 "use client";
 import {Block, BlockNoteEditor} from "@blocknote/core";
-import {AudioBlock, ImageBlock, VideoBlock} from "@blocknote/react";
-import {isInstance} from "@/lib/utils";
-import {mvObject, mvObjectInBatch, MvParams} from "@/lib/s3/actions";
+import {mvObjectInBatch, MvParams} from "@/lib/s3/actions";
 
 export async function commitEditorMedia(editor: BlockNoteEditor, {
     username,
@@ -11,8 +9,8 @@ export async function commitEditorMedia(editor: BlockNoteEditor, {
     username: string,
     slug: string,
 }) {
-    const mediaBlocks = []
-    editor.forEachBlock((block: Block) => {
+    const mediaBlocks: any[] = []
+    editor.forEachBlock((block: any) => {
         if (block.props.url) {
             mediaBlocks.push(block)
         }

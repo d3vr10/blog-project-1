@@ -8,7 +8,7 @@ import {Badge} from "@/components/ui/badge";
 import env from "@/lib/env"
 import dynamic from "next/dynamic";
 
-const BlocksToHTML = dynamic(() => import("@/components/forms/articles/editor/blocks-to-html"), {ssr: false})
+const BlocksToHTML = dynamic(() => import("@/components/forms/articles/editor/BlocksToHTML"), {ssr: false})
 
 export default async function Page({params: {slug}}: { params: { slug: string } }) {
     const [joinedResult] = await db.select()

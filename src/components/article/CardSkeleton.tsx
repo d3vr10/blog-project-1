@@ -1,9 +1,11 @@
 import {Skeleton} from "@/components/ui/skeleton";
-import {Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle} from "@/components/ui/card";
+import {Card, CardContent, CardHeader} from "@/components/ui/card";
 import {cn} from "@/lib/utils";
-import {forwardRef} from "react";
+import React from "react"
 
-const ArticleCardSkeleton = forwardRef(({className}, ref) => (
+const ArticleCardSkeleton = React.forwardRef<HTMLDivElement, {
+    className?: string,
+}>(({className}, ref) => (
     <Card ref={ref} className={cn(className)}>
         <CardHeader>
             <Skeleton className={"aspect-video"}/>

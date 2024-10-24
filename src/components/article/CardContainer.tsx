@@ -3,9 +3,15 @@
 import {Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle} from "@/components/ui/card";
 import Image from "next/image";
 import Link from "next/link";
-import {useEffect, useRef, useState} from "react";
+import {Ref, useEffect, useRef, useState} from "react";
 
-export default function ArticleCard ({className, article, parentLoadingState, ref}) {
+export default function CardContainer(
+    {className, article, ref}: {
+        className?: string,
+        article: any,
+        parentLoadingState?: boolean,
+        ref?: Ref<HTMLDivElement>,
+    }) {
     const blob: any = useRef(null)
     const [url, setURL] = useState<undefined | string>(undefined);
     const [date, setDate] = useState<undefined | string>(undefined);

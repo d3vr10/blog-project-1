@@ -3,12 +3,15 @@
 import {Button} from "./button";
 import React from "react";
 
-const LoaderButton = React.forwardRef(({isSubmitting, children, onClick, type}: {
-    isSubmitting: boolean,
-    children?: React.ReactNode,
-    onClick?: () => void,
-    type?: "button" | "submit"
-}, ref) => {
+const LoaderButton = React.forwardRef<
+    HTMLButtonElement,
+    {
+        isSubmitting: boolean,
+        children?: React.ReactNode,
+        onClick?: () => void,
+        type?: "button" | "submit",
+    }
+>(({isSubmitting, children, onClick, type}, ref) => {
     return (
         <Button
             type={type ? type : "submit"}
