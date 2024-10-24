@@ -5,7 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import Skeleton from "@/app/(root)/articles/_components/card-skeleton";
 
-export default function Component({article}) {
+export default function ArticleCard({article}) {
     const [loading, setLoading] = useState(true);
     const [url, setUrl] = useState<string | undefined>(undefined);
     const [show, setShow] = useState<boolean>(false)

@@ -13,7 +13,7 @@ import {
     FormMessage
 } from "../../../../components/ui/form";
 import {Input} from "../../../../components/ui/input";
-import LoaderButton from "../../../../components/loader-button";
+import LoaderButton from "../../../../components/ui/loader-button";
 import {Button} from "../../../../components/ui/button";
 import {signUp} from "@/lib/auth/actions";
 import {useRouter} from "next/navigation";

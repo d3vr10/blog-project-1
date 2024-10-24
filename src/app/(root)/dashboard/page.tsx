@@ -5,8 +5,8 @@ import {paginate} from "@/lib/db/utils";
 import {eq} from "drizzle-orm";
 import {Plus} from "lucide-react"
 import Link from "next/link"
-import {DataTable} from "@/app/(root)/dashboard/_components/data-table";
-import {columns} from "@/app/(root)/dashboard/_components/column-definitions";
+import {DataTable} from "@/components/dashboard/data-table";
+import {columns} from "@/components/dashboard/column-definitions";
 
 export default async function Page(params: any) {
     const query = db

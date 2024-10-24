@@ -1,7 +1,7 @@
 "use client";
 import {DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger,} from "@/components/ui/dropdown-menu"
 import {Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle} from "@/components/ui/card";
-import LoaderButton from "@/components/loader-button";
+import LoaderButton from "@/components/ui/loader-button";
 import {Form, FormField, FormItem, FormLabel} from "@/components/ui/form";
 import {clsx} from "clsx";
 import {useEffect, useRef, useState} from "react";

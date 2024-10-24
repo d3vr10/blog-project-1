@@ -13,7 +13,7 @@ export default function Footer() {
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
                     {/* Logo and site name */}
                     <div className="flex flex-col items-start">
-                        <Link href="/" className="flex items-center space-x-2">
+                        <Link href="/public" className="flex items-center space-x-2">
                             <Image src={"/images/mono-arc-center.svg"} height={40} width={40} alt=""/>
                             <span className="text-xl font-bold">MonoArc</span>
                         </Link>

@@ -9,7 +9,7 @@ import {Button} from "../../../../components/ui/button";
 import {GitHubIcon} from "../../../../components/icons";
 import Image from "next/image"
 import Link from "next/link";
-import LoaderButton from "../../../../components/loader-button";
+import LoaderButton from "../../../../components/ui/loader-button";
 import {signIn} from "@/lib/auth/actions";
 import {useToast} from "@/hooks/use-toast";
 import {useRouter} from "next/navigation";

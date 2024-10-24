@@ -1,9 +1,9 @@
 "use client";
 
-import { Button } from "./ui/button";
+import { Button } from "./button";
 import { Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "./ui/dropdown-menu";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "./dropdown-menu";
 
 export default function ToggleThemeButton() {
     const { themes, setTheme } = useTheme()

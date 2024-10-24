@@ -4,16 +4,9 @@ import Image from "next/image";
 import {cn} from "@/lib/utils";
 import {clsx} from "clsx";
 import {Button} from "@/components/ui/button";
-import {UseFormGetFieldState, type UseFormRegisterReturn, UseFormStateReturn} from "react-hook-form";
 import {Input} from "@/components/ui/input";
 import {useRef} from "react";
-
-interface Cover {
-    watch: any,
-    className?: string,
-    fileInputRef: UseFormRegisterReturn<any>,
-    fieldState: any,
-}
+import { type Cover } from "@/types"
 
 const Cover: React.FC<Cover> = ({watch, className, fileInputRef: {ref, ...rest}, fieldState}) => {
     const file = watch("featuredImage")
@@ -29,7 +22,7 @@ const Cover: React.FC<Cover> = ({watch, className, fileInputRef: {ref, ...rest},
             className,
         )}>
             {file && file[0] &&
-                <Image src={file[0]} alt="a" fill sizes="w-full" className={"object-cover"}/>
+                <Image src={file[0]} alt="Cover Image" fill sizes="w-full" className={"object-cover"}/>
             }
             <Button
                 className={clsx({

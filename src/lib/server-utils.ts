@@ -4,6 +4,7 @@ import db from "@/lib/db";
 import {articleSchema,} from "@/lib/db/schemas";
 import {eq, count as countFunction} from "drizzle-orm";
 import {id} from "postcss-selector-parser";
+import {rateLimitOptions} from "@/types";
 
 
 export function getServerRequestPathname() {
@@ -25,10 +26,6 @@ export async function slugifyArticle(title: string) {
     return slug + `-${count}`
 }
 
-interface rateLimitOptions {
-    attempts?: number,
-    resetAfter?: number,
-}
 
 export function rateLimit<T extends (...args: any[]) => any>
 (

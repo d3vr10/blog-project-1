@@ -1,6 +1,6 @@
 "use client";
 
-import {Button} from "./ui/button";
+import {Button} from "./button";
 import React from "react";
 
 const LoaderButton = React.forwardRef(({isSubmitting, children, onClick, type}: {

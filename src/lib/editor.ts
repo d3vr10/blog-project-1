@@ -45,9 +45,9 @@ export async function commitEditorMedia(editor: BlockNoteEditor, {
         const oldKey = block.props.url.split("/").pop()
         const key = `${username}/${slug}/${oldKey}`
         url.pathname = `/api/s3/articles/editor/${key}`
-        // block.props.url = url.href
+        block.props.url = url.href
     }
 
-    // localStorage.setItem("editorContent", JSON.stringify(editor.document))
+    localStorage.setItem("editorContent", JSON.stringify(editor.document))
 
 }

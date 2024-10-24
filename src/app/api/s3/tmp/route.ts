@@ -10,7 +10,7 @@ export async function PUT(req: Request) {
             error: {
                 message: "Either unknown file type or binary data has not been supplied"
             }
-        })
+        }, { status: 429 });
     }
     try {
         const mimeType = req.headers.get("content-type")
@@ -36,6 +36,6 @@ export async function PUT(req: Request) {
             error: {
                 message: "There was an error uploading your media file"
             }
-        })
+        }, { status: 500 })
     }
 }
