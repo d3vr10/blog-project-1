@@ -1,36 +1,47 @@
 "use client";
-
+import {useEffect, useRef, useState} from "react";
 import {Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle} from "@/components/ui/card";
 import Image from "next/image";
 import Link from "next/link";
-import {Ref, useEffect, useRef, useState} from "react";
+import Skeleton from "@/components/article/CardSkeleton";
 
-export default function CardContainer(
-    {className, article, ref}: {
-        className?: string,
-        article: any,
-        parentLoadingState?: boolean,
-        ref?: Ref<HTMLDivElement>,
-    }) {
-    const blob: any = useRef(null)
-    const [url, setURL] = useState<undefined | string>(undefined);
-    const [date, setDate] = useState<undefined | string>(undefined);
+export default function CardContainer({article}: { article: any }) {
+    const [loading, setLoading] = useState(true);
+    const [url, setUrl] = useState<string | undefined>(undefined);
+    const [show, setShow] = useState<boolean>(false)
+    const skeletonRef = useRef(null);
+    const articleCardRef = useRef(null);
+
     useEffect(() => {
-        if (window !== undefined) {
-            setDate(new Date().toLocaleString())
-            const byteString = atob(article.featuredImage.byteString)
-            const uint8Array = new Uint8Array(byteString.length)
-            for (let i = 0; i < byteString.length; i++) {
-                uint8Array[i] = byteString.charCodeAt(i)
+        let fileURL = null
+        try {
+            if (article.featuredImage) {
+                const byteString = atob(article.featuredImage.byteString)
+                const bytes = new Uint8Array(byteString.length)
+                for (let i = 0; i < byteString.length; i++) {
+                    bytes[i] = byteString.charCodeAt(i)
+                }
+                const blob = new Blob([bytes as BlobPart], {type: article.featuredImage.mimeType})
+                fileURL = URL.createObjectURL(blob)
+                setUrl(fileURL)
             }
-            blob.current = new Blob([uint8Array as BlobPart], {type: article.featuredImage.mimeType})
-            setURL(URL.createObjectURL(blob.current))
+        } catch (err: any) {
+        } finally {
+            setShow(true)
+        }
+        return () => {
+            if (fileURL) URL.revokeObjectURL(fileURL)
         }
     }, [])
 
+    if (!show) {
+        return <Skeleton/>
+    }
+
     return (
-        <>
-            <Card key={article.id} ref={ref}>
+        <div>
+
+            <Card>
                 <CardHeader>
                     <Image src={url ? url : "/images/not-found.jpg"} width={300}
                            height={300}
@@ -43,9 +54,8 @@ export default function CardContainer(
                     </Link>
                     <CardDescription>{article.excerpt}</CardDescription>
                 </CardContent>
-                <CardFooter>{date}</CardFooter>
+                <CardFooter>Footer</CardFooter>
             </Card>
-        </>
+        </div>
     )
 }
-

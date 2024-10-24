@@ -1,5 +1,5 @@
-import GitHubIcon from "./github";
-import GoogleIcon from "./google"
+import GitHubIcon from "./Github";
+import GoogleIcon from "./Google"
 
 export {
     GitHubIcon,
