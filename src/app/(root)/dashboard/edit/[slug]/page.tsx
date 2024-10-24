@@ -4,7 +4,7 @@ import db from "@/lib/db";
 import {notFound} from "next/navigation";
 import {retrieveFileContents} from "@/lib/fs/file-storage";
 import path from "path"
-import EditContainer from "@/containers/forms/articles/edit";
+import EditContainer from "@/components/forms/articles/EditContainer";
 
 export default async function Page({ params: { slug}}: { params: {slug: string} }) {
     const article = await db.query.articleSchema.findFirst({

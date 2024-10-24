@@ -1,5 +1,5 @@
 import {Card, CardContent, CardDescription, CardHeader, CardTitle} from "@/components/ui/card";
-import CreateContainer from "@/containers/forms/articles/create";
+import CreateContainer from "@/components/forms/articles/CreateContainer";
 
 export default async function Page() {
     return (

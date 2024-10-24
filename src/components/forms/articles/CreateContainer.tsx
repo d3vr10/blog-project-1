@@ -14,7 +14,7 @@ import {commitEditorMedia} from "@/lib/editor";
 import {slugify} from "@/lib/utils";
 import {createArticle} from "@/lib/articles/actions";
 import {refreshArticles} from "@/app/actions";
-import CreateComponent from "@/components/forms/articles/create";
+import CreateComponent from "@/components/forms/articles/CreatePresentation";
 
 export default function CreateContainer() {
 
@@ -73,7 +73,7 @@ export default function CreateContainer() {
             userId: validResult.payload.id,
         })
         if (createResult.error) {
-            let title = "Unknown Error"
+            const title = "Unknown Error"
             let message = "unknown error"
             if (createResult.status === 409) {
                 message = "An article with this title already exists"

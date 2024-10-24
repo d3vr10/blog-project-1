@@ -7,10 +7,8 @@ import {Textarea} from "../../ui/textarea";
 import {Button} from "../../ui/button";
 import LoaderButton from "../../ui/loader-button";
 import {EditArticleSchemaClient} from "@/lib/schemas/article";
-import {ComponentType, RefObject} from "react";
+import {ComponentType} from "react";
 import Cover from "@/app/(root)/articles/_components/cover";
-import {BlockNoteEditor} from "@blocknote/core";
-
 
 
 export default function EditComponent(

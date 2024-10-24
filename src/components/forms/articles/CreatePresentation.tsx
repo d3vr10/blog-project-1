@@ -10,13 +10,14 @@ import {ComponentType, RefObject} from "react";
 import {CreateArticleSchemaClient} from "@/lib/schemas/article";
 import {SubmitHandler, UseFormRegisterReturn, UseFormReturn} from "react-hook-form";
 import {BlockNoteEditor} from "@blocknote/core";
+import type Editor from "@/components/forms/articles/editor/editor"
 
 export default function CreateComponent({onSubmit, form, editorRef, fileRef, Editor}: {
     onSubmit: SubmitHandler<CreateArticleSchemaClient>,
     form: UseFormReturn<CreateArticleSchemaClient>,
     editorRef: RefObject<BlockNoteEditor | null>,
     fileRef: UseFormRegisterReturn<any>,
-    Editor: ComponentType,
+    Editor: ComponentType<Editor>,
 }) {
     const {getFieldState, watch, handleSubmit, control, formState} = form
     return (
@@ -25,7 +26,6 @@ export default function CreateComponent({onSubmit, form, editorRef, fileRef, Edi
                 watch={watch}
                 fileInputRef={fileRef}
                 fieldState={getFieldState("featuredImage")}
-                control={control}
             />
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
                 <FormField control={control} name="title" render={({field, fieldState: {error}}) =>

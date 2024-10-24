@@ -9,7 +9,7 @@ import {debounce} from "lodash";
 import {validateSession} from "@/lib/auth/actions";
 import {editArticle} from "@/lib/articles/actions";
 import {refreshArticles} from "@/app/actions";
-import EditComponent from "@/components/forms/articles/edit";
+import EditComponent from "@/components/forms/articles/EditPresentation";
 import dynamic from "next/dynamic";
 
 export default function EditContainer(
