@@ -22,7 +22,7 @@ const Cover: React.FC<Cover> = ({watch, className, fileInputRef: {ref, ...rest},
             className,
         )}>
             {file && file[0] &&
-                <Image src={file[0]} alt="Cover Image" fill sizes="w-full" className={"object-cover"}/>
+                <Image src={file[0]} alt="a" fill sizes="w-full" className={"object-cover"}/>
             }
             <Button
                 className={clsx({
