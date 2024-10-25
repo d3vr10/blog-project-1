@@ -5,7 +5,7 @@ import {useEffect, useState} from "react";
 import {verifyForgotPasswordToken} from "@/actions/auth";
 import clsx from "clsx";
 
-export default function VerifyToken({encodedToken}: { encodedToken: string }) {
+export default function VerifyTokenContainer({encodedToken}: { encodedToken: string }) {
     const router = useRouter();
     const [verifying, setVerifying] = useState(true);
     const [userMsg, setUserMsg] = useState<{ title: string; description: string; variant?: string } | null>(null);

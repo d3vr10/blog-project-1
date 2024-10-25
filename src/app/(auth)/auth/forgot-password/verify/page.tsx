@@ -1,6 +1,6 @@
-import VerifyToken from "@/app/(auth)/auth/forgot-password/verify/_components/verify-token";
+import VerifyTokenContainer from "@/components/forms/auth/VerifyTokenContainer";
 
-export default function Page({searchParams}) {
+export default function Page({searchParams}: { searchParams: { token: string}}) {
     const encodedToken = searchParams["token"]
     return (
         <>
@@ -9,7 +9,7 @@ export default function Page({searchParams}) {
                     No token has been supplied. Please check your email and click on the verification link.
                 </div>
             )}
-            {encodedToken && <VerifyToken encodedToken={encodedToken}/>}
+            {encodedToken && <VerifyTokenContainer encodedToken={encodedToken}/>}
         </>
     )
 }
