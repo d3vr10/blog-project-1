@@ -1,6 +1,6 @@
 "use client";
-import {Block, BlockNoteEditor} from "@blocknote/core";
-import {mvObjectInBatch, MvParams} from "@/lib/s3/actions";
+import {BlockNoteEditor} from "@blocknote/core";
+import {mvObjectInBatch, MvParams} from "@/actions/s3";
 
 export async function commitEditorMedia(editor: BlockNoteEditor, {
     username,

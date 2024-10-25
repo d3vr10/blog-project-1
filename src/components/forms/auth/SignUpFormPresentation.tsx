@@ -1,66 +1,17 @@
 "use client";
 
-import {UserCreateType, userCreateSchema} from "@/lib/schemas/user";
-import {zodResolver} from "@hookform/resolvers/zod";
-import {SubmitHandler, useForm} from "react-hook-form";
-import {
-    Form,
-    FormControl,
-    FormDescription,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage
-} from "../../../../components/ui/form";
-import {Input} from "../../../../components/ui/input";
-import LoaderButton from "../../../../components/ui/loader-button";
-import {Button} from "../../../../components/ui/button";
-import {signUp} from "@/lib/auth/actions";
-import {useRouter} from "next/navigation";
-import {useToast} from "@/hooks/use-toast";
-import {useAuth} from "./context";
+import {SubmitHandler, UseFormReturn} from "react-hook-form";
+import {UserCreateType} from "@/lib/schemas/user";
+import {Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage} from "@/components/ui/form";
+import {Input} from "@/components/ui/input";
+import {Button} from "@/components/ui/button";
+import LoaderButton from "@/components/ui/loader-button";
 
-
-export default function SignupForm() {
-    const {auth, setAuth} = useAuth()
-    const router = useRouter()
-    const {toast} = useToast()
-    const form = useForm<UserCreateType>({
-        defaultValues: {
-            username: "",
-            email: "",
-            password: "",
-            repeatPassword: "",
-        },
-        mode: "all",
-        resolver: zodResolver(userCreateSchema)
-    })
-    const {setError, formState, handleSubmit, control} = form
-    const onSubmit: SubmitHandler<UserCreateType> = async (values) => {
-        const response = await signUp(values)
-
-        let title = "Success"
-        let description = "Account was created!"
-        if (response.error) {
-            title = ""
-            description = ""
-            if (response.status === 409) {
-                title = "Sign up Error"
-                description = "This account already exists"
-            } else if (response.status >= 500) {
-                title = "Server Error"
-                description = "Something happened on our side. It's not you. We'll be working on it"
-            }
-        } else {
-            setAuth(response.payload)
-        }
-        toast({
-            title: title,
-            description: description,
-            variant: response.error? "destructive" : "default",
-        })
-        router.push("/")
-    }
+export default function SignUpFormPresentation({form, onSubmit}: {
+    form: UseFormReturn<UserCreateType>,
+    onSubmit: SubmitHandler<UserCreateType>,
+}) {
+    const {control, handleSubmit, formState} = form
     return (
         <Form {...form}>
             <form action="" onSubmit={handleSubmit(onSubmit)}>

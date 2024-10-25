@@ -13,8 +13,8 @@ import {
 } from "@/components/ui/dropdown-menu";
 import {Button} from "@/components/ui/button";
 import {EyeIcon, EyeOffIcon, MoreHorizontal, PencilIcon, TrashIcon} from "lucide-react";
-import {deleteArticle, toggleArticleVisibility} from "@/lib/articles/actions";
-import {refreshArticles} from "@/app/actions";
+import {deleteArticle, toggleArticleVisibility} from "@/actions/articles";
+import {refreshArticles} from "@/actions/revalidate-path-cache";
 import Link from "next/link";
 import {revalidatePathAction} from "@/app/(root)/testing/actions";
 

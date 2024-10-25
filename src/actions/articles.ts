@@ -2,10 +2,10 @@
 
 
 import {eq, not} from "drizzle-orm";
-import db from "../db";
-import {articleSchema} from "../db/schemas";
-import {createSchemaServer, editSchemaServer} from "../schemas/article";
-import {slugify} from "../utils";
+import db from "../lib/db";
+import {articleSchema} from "../lib/db/schemas";
+import {createSchemaServer, editSchemaServer} from "../lib/schemas/article";
+import {slugify} from "../lib/utils";
 import {slugifyArticle} from "@/lib/server-utils";
 import {removeArticleImage, retrieveFileContents, storeFile} from "@/lib/fs/file-storage";
 import {verify} from "@/lib/auth/jwt";

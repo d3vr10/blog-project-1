@@ -1,36 +1,22 @@
-"use client";
-import {DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger,} from "@/components/ui/dropdown-menu"
+import {SubmitHandler, UseFormReturn} from "react-hook-form";
+import {Dispatch, MutableRefObject, SetStateAction} from "react";
 import {Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle} from "@/components/ui/card";
-import LoaderButton from "@/components/ui/loader-button";
 import {Form, FormField, FormItem, FormLabel} from "@/components/ui/form";
-import {clsx} from "clsx";
-import {useEffect, useRef, useState} from "react";
-import {SubmitHandler, useForm} from "react-hook-form";
-import {zodResolver} from "@hookform/resolvers/zod";
-import {generateForgotPasswordToken} from "@/app/(auth)/auth/forgot-password/actions";
-import {toast} from "@/hooks/use-toast";
+import LoaderButton from "@/components/ui/loader-button";
+import {AlertCircle, AtSign, ChevronDown, User} from "lucide-react";
 import {Button} from "@/components/ui/button";
 import Link from "next/link";
+import {DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger} from "@/components/ui/dropdown-menu";
+import {clsx} from "clsx";
 import {Input} from "@/components/ui/input";
-import {AlertCircle, AtSign, ChevronDown, User} from "lucide-react";
-import {z} from "zod";
-
-const forgotEmailSchema = z.object({
-    email: z.union([z.string().email(), z.literal("")]),
-    username: z.union([z.string().min(8).regex(/^[a-z0-9_-]+$/i), z.literal("")]),
-    atLeastOne: z.unknown().optional(),
-}).refine((value) => value.email.length > 0 || value.username.length > 0, {
-    message: "At least one of both fields must be filled out",
-    path: ["atLeastOne"]
-});
-type ForgotEmailSchema = z.infer<typeof forgotEmailSchema>
-
-type ResetMethod = "email" | "username"
+import {
+    ForgotEmailSchema,
+    ResetMethod
+} from "@/components/forms/forgot-password/ForgotPasswordFormContainer";
 
 const ResetMethodIcon = ({method}: { method: ResetMethod }) => {
     return method === "email" ? <AtSign className="h-4 w-4"/> : <User className="h-4 w-4"/>
 }
-
 
 const CustomInput = ({
                          resetMethod,
@@ -104,48 +90,27 @@ const CustomInput = ({
     )
 }
 
-export default function ForgotPasswordLinkForm() {
-    const [resetMethod, setResetMethod] = useState<ResetMethod>("email")
-    const [sentEmail, setSentEmail] = useState(false);
-    const formRef = useRef<null | HTMLFormElement>(null);
-    const submitBtnRef = useRef<null | HTMLButtonElement>(null)
-    const defaultValues = {
-        email: "",
-        username: "",
-    }
-    const form = useForm<ForgotEmailSchema>({
-        resolver: zodResolver(forgotEmailSchema),
-        mode: "all",
-        defaultValues: defaultValues,
-    });
-    useEffect(() => {
-        if (typeof window !== "undefined") {
+export function ForgotPasswordFormPresentation(
+    {
+        sentEmail,
+        onSubmit,
+        form,
+        formRef,
+        submitBtnRef,
+        resetMethod,
+        setResetMethod,
+    }:
+        {
+            sentEmail: boolean,
+            onSubmit: SubmitHandler<ForgotEmailSchema>,
+            form: UseFormReturn<ForgotEmailSchema>,
+            formRef: MutableRefObject<HTMLFormElement | null>,
+            submitBtnRef: MutableRefObject<HTMLButtonElement | null>,
+            resetMethod: ResetMethod,
+            setResetMethod: Dispatch<SetStateAction<ResetMethod>>,
         }
-    }, []);
+) {
     const {handleSubmit, formState, resetField} = form
-    const onSubmit: SubmitHandler<ForgotEmailSchema> = async (value) => {
-        const res = await generateForgotPasswordToken({
-            resetMethod,
-            resetValue: value[resetMethod] as string,
-        })
-        if (res.error) {
-            let title;
-            let message;
-            if (res.status === 404) {
-                title = "Not Found"
-                message = `Account with this ${resetMethod} doesn't exist`
-            } else {
-                title = "Server Error"
-                message = "There occurred an error while processing your request"
-            }
-            toast({
-                title: title,
-                description: message,
-            })
-            return;
-        }
-        setSentEmail(true)
-    }
     return (
         <>
             {!sentEmail && (
@@ -180,7 +145,7 @@ export default function ForgotPasswordLinkForm() {
                                         } else if (resetMethod === "email") {
                                             resetField("username")
                                         }
-                                        formRef.current.requestSubmit()
+                                        formRef.current?.requestSubmit()
                                     }}
                                     type={"button"}
                                 >

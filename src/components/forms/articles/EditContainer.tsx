@@ -6,9 +6,9 @@ import {SubmitHandler, useForm} from "react-hook-form";
 import {EditArticleSchemaClient, editSchemaClient} from "@/lib/schemas/article";
 import {zodResolver} from "@hookform/resolvers/zod";
 import {debounce} from "lodash";
-import {validateSession} from "@/lib/auth/actions";
-import {editArticle} from "@/lib/articles/actions";
-import {refreshArticles} from "@/app/actions";
+import {validateSession} from "@/actions/auth";
+import {editArticle} from "@/actions/articles";
+import {refreshArticles} from "@/actions/revalidate-path-cache";
 import EditComponent from "@/components/forms/articles/EditPresentation";
 import dynamic from "next/dynamic";
 

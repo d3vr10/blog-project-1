@@ -1,16 +1,13 @@
 "use client";
-import {useEffect, useRef, useState} from "react";
+import {useEffect, useState} from "react";
 import {Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle} from "@/components/ui/card";
 import Image from "next/image";
 import Link from "next/link";
 import Skeleton from "@/components/article/CardSkeleton";
 
 export default function CardContainer({article}: { article: any }) {
-    const [loading, setLoading] = useState(true);
     const [url, setUrl] = useState<string | undefined>(undefined);
-    const [show, setShow] = useState<boolean>(false)
-    const skeletonRef = useRef(null);
-    const articleCardRef = useRef(null);
+    const [ready, setReady] = useState<boolean>(false)
 
     useEffect(() => {
         let fileURL = null
@@ -27,20 +24,19 @@ export default function CardContainer({article}: { article: any }) {
             }
         } catch (err: any) {
         } finally {
-            setShow(true)
+            setReady(true)
         }
         return () => {
             if (fileURL) URL.revokeObjectURL(fileURL)
         }
     }, [])
 
-    if (!show) {
+    if (!ready) {
         return <Skeleton/>
     }
 
     return (
         <div>
-
             <Card>
                 <CardHeader>
                     <Image src={url ? url : "/images/not-found.jpg"} width={300}

@@ -4,7 +4,7 @@ import {Button} from "../ui/button";
 import {ChartBarIncreasing, LogOut as LogOutIcon, User2,} from "lucide-react";
 import {useAuth} from "@/app/(auth)/auth/_components/context";
 import Link from "next/link";
-import {logout} from "@/lib/auth/actions";
+import {logout} from "@/actions/auth";
 import {useState} from "react";
 
 

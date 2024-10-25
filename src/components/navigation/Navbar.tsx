@@ -1,7 +1,7 @@
 "use client"
 
 import Image from "next/image";
-import {AuthDialog} from "@/app/(auth)/auth/_components/auth-dialog";
+import AuthDialogContainer from "@/components/forms/auth/AuthDialogContainer";
 import ToggleThemeDropdown from "../ui/toggle-theme-dropdown";
 import {useAuth} from "@/app/(auth)/auth/_components/context";
 import Link from "next/link";
@@ -24,7 +24,7 @@ export default function Navbar() {
                             ? <Skeleton className={"w-[104.5px] h-8"}/>
                             : auth
                                 ? <NavbarUserPopover/>
-                                : <AuthDialog/>
+                                : <AuthDialogContainer/>
                     }</div>
                 </div>
             </div>

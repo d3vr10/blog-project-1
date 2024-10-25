@@ -2,7 +2,7 @@
 
 import {useRouter} from "next/navigation";
 import {useEffect, useState} from "react";
-import {verifyForgotPasswordToken} from "@/lib/auth/actions";
+import {verifyForgotPasswordToken} from "@/actions/auth";
 import clsx from "clsx";
 
 export default function VerifyToken({encodedToken}: { encodedToken: string }) {

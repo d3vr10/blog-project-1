@@ -6,7 +6,7 @@ import {BlockNoteView} from "@blocknote/mantine";
 import {BlockNoteEditor} from "@blocknote/core";
 import {cn} from "@/lib/utils";
 import {useMemo} from "react";
-import {validateSession} from "@/lib/auth/actions";
+import {validateSession} from "@/actions/auth";
 import {type Editor} from "@/types"
 import {useToast} from "@/hooks/use-toast";
 

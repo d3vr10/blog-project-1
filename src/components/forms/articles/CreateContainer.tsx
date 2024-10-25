@@ -9,11 +9,11 @@ import {SubmitHandler, useForm} from "react-hook-form";
 import {CreateArticleSchemaClient, createSchemaClient} from "@/lib/schemas/article";
 import {zodResolver} from "@hookform/resolvers/zod";
 import {debounce} from "lodash";
-import {validateSession} from "@/lib/auth/actions";
+import {validateSession} from "@/actions/auth";
 import {commitEditorMedia} from "@/lib/editor";
 import {slugify} from "@/lib/utils";
-import {createArticle} from "@/lib/articles/actions";
-import {refreshArticles} from "@/app/actions";
+import {createArticle} from "@/actions/articles";
+import {refreshArticles} from "@/actions/revalidate-path-cache";
 import CreateComponent from "@/components/forms/articles/CreatePresentation";
 
 export default function CreateContainer() {

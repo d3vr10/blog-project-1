@@ -1,8 +1,8 @@
-import ForgotPasswordLinkForm from "@/app/(auth)/auth/forgot-password/_components/forgot-password-link-form";
+import ForgotPasswordFormContainer from "@/components/forms/forgot-password/ForgotPasswordFormContainer";
 
 
 export default function Page() {
     return (
-        <ForgotPasswordLinkForm/>
+        <ForgotPasswordFormContainer/>
     )
 }

@@ -6,8 +6,8 @@ import {z} from "zod";
 import {Form, FormControl, FormField, FormItem, FormLabel, FormMessage} from "@/components/ui/form";
 import {Input} from "@/components/ui/input";
 import LoaderButton from "@/components/ui/loader-button";
-import resetPassword from "@/app/(auth)/auth/forgot-password/actions";
 import {useToast} from "@/hooks/use-toast";
+import resetPassword from "@/actions/auth";
 
 const resetPasswordSchema = z.object({
     password: z.string().min(8),
