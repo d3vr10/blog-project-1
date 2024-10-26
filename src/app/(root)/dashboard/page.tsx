@@ -8,7 +8,7 @@ import Link from "next/link"
 import {DataTable} from "@/components/dashboard/data-table";
 import {columns} from "@/components/dashboard/column-definitions";
 
-export default async function Page(params: any) {
+export default async function Page(props: any) {
     const query = db
         .select()
         .from(articleSchema)

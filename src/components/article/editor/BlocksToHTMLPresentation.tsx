@@ -2,7 +2,7 @@
 import {useCreateBlockNote} from "@blocknote/react";
 import {useEffect, useState} from "react";
 
-const BlocksToHTML: React.FC<{ content: string }> = ({content}) => {
+const BlocksToHTMLPresentation: React.FC<{ content?: string | null }> = ({content}) => {
     const editor = useCreateBlockNote({
         initialContent: content? JSON.parse(content) : undefined
     })
@@ -18,4 +18,4 @@ const BlocksToHTML: React.FC<{ content: string }> = ({content}) => {
     return <div dangerouslySetInnerHTML={{__html: html}}></div>
 }
 
-export default BlocksToHTML;
+export default BlocksToHTMLPresentation;

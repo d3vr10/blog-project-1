@@ -23,7 +23,7 @@ export default function EditContainer(
         : {
         title: string,
         excerpt: string,
-        content: string,
+        content?: string | null,
         slug: string,
         featuredImage?: {
             name: string,

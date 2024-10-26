@@ -1,7 +1,7 @@
 import VerifyTokenContainer from "@/components/forms/auth/VerifyTokenContainer";
 
-export default function Page({searchParams}: { searchParams: { token: string}}) {
-    const encodedToken = searchParams["token"]
+export default async function Page(props: { searchParams: Promise<{ token: string}>}) {
+    const { token: encodedToken } = await props.searchParams
     return (
         <>
             {!encodedToken && (

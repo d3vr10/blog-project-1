@@ -1,5 +1,4 @@
-import { headers } from "next/headers"
-import { NextRequest, NextResponse } from "next/server"
+import {NextRequest, NextResponse} from "next/server"
 
 function normalizeRawKey(headerName: string) {
     headerName = headerName.toLowerCase().trim()
@@ -8,15 +7,6 @@ function normalizeRawKey(headerName: string) {
     return headerName
 
 }
-
-function getAPIContext(req: NextRequest, rawKey: string) { 
-    return req.headers.get(normalizeRawKey(rawKey))
-}
-
-function getPageContext(rawKey: string) {
-    return headers().get(normalizeRawKey(rawKey))
-}
-
 
 function deNormalizeKey(headerName: string) {
     if (headerName.slice(0, 4) === "ctx-")

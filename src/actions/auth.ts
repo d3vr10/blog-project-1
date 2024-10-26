@@ -4,7 +4,7 @@ import {eq} from "drizzle-orm";
 import db from "../lib/db";
 import {forgotPasswordSchema, userSchema} from "../lib/db/schemas";
 import argon from "argon2"
-import {cookies} from "next/headers";
+import {cookies as nextCookies} from "next/headers";
 import {encrypt, verify} from "../lib/auth/jwt";
 import {randomBytes} from "node:crypto";
 import {sendForgotPasswordEmail} from "@/lib/auth/mailer";
@@ -16,7 +16,7 @@ export async function signIn({signInMethod, signInValue}: {
     const user = await db.query.userSchema.findFirst({
         where: signInMethod === "username"? eq(userSchema.username, signInValue) : eq(userSchema.email, signInValue),
     })
-
+    const cookies = await nextCookies()
     if (user) {
         const passwordMatch = await argon.verify(user.password, password)
         if (passwordMatch) {
@@ -26,7 +26,7 @@ export async function signIn({signInMethod, signInValue}: {
                 username: user.username
             }
             const jwt = await encrypt(payload)
-            cookies().set("auth_token", jwt)
+            cookies.set("auth_token", jwt)
             return {
                 status: 200,
                 message: "Authenticated successfully!",
@@ -54,6 +54,7 @@ export async function signUp({
     password: string,
 }) {
     const hash = await argon.hash(password)
+    const cookies = await nextCookies()
     try {
         const [user] = await db.insert(userSchema).values({
             email: email,
@@ -66,7 +67,7 @@ export async function signUp({
             username: user.username
         }
         const token = await encrypt(payload)
-        cookies().set("auth_token", token)
+        cookies.set("auth_token", token)
         return {
             status: 200,
             message: `Account "${username}" has been created`,
@@ -103,7 +104,8 @@ export async function signUp({
 }
 
 export async function validateSession() {
-    const cookie = cookies().get("auth_token")
+    const cookies = await nextCookies()
+    const cookie = cookies.get("auth_token")
     if (cookie) {
         const {value} = cookie
         try {
@@ -140,6 +142,7 @@ export async function verifyForgotPasswordToken(encodedToken: string) {
     const row = await db.query.forgotPasswordSchema.findFirst({
         where: eq(forgotPasswordSchema.token, token)
     })
+    const cookies = await nextCookies()
 
     if (!row) {
         return {
@@ -160,7 +163,7 @@ export async function verifyForgotPasswordToken(encodedToken: string) {
         }
     }
 
-    cookies().set("forgot-password-token", row.token, {
+    cookies.set("forgot-password-token", row.token, {
         expires: row.expiresIn,
         httpOnly: true,
     })
@@ -171,11 +174,13 @@ export async function verifyForgotPasswordToken(encodedToken: string) {
 }
 
 export async function logout() {
-    cookies().delete("auth_token")
+    const cookies = await nextCookies()
+    cookies.delete("auth_token")
 }
 
 export default async function resetPassword(password: string) {
-    const token = cookies().get("forgot-password-token")?.value
+    const cookies = await nextCookies()
+    const token = cookies.get("forgot-password-token")?.value
     if (!token) {
         return {
             status: 429,
@@ -215,7 +220,7 @@ export default async function resetPassword(password: string) {
     }
 
     //CLEANING
-    cookies().delete("forgot-password-token")
+    cookies.delete("forgot-password-token")
     const [deletedRow] = await db
         .delete(forgotPasswordSchema)
         .where(eq(forgotPasswordSchema.token, token))

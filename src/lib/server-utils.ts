@@ -1,14 +1,14 @@
-import {headers} from "next/headers";
+import {headers as nextHeaders} from "next/headers";
 import {slugify} from "@/lib/utils";
 import db from "@/lib/db";
 import {articleSchema,} from "@/lib/db/schemas";
 import {eq, count as countFunction} from "drizzle-orm";
-import {id} from "postcss-selector-parser";
 import {rateLimitOptions} from "@/types";
 
 
-export function getServerRequestPathname() {
-    const path = headers().get("x-current-path")
+export async function getServerRequestPathname() {
+    const headers = await nextHeaders()
+    const path = headers.get("x-current-path")
     if (!path)
         throw new Error("x-current-path is not being set properly on the middleware. Please check!")
     return path
@@ -36,7 +36,8 @@ export function rateLimit<T extends (...args: any[]) => any>
     options.resetAfter = (options.resetAfter ?? 24) * 60 * 60 * 1000;
 
     return async (...args: Parameters<T>) => {
-        const ip = headers().get("x-forwarded-for")?.split(",")[0] || "127.0.0.1"
+        const headers = await nextHeaders()
+        const ip = headers.get("x-forwarded-for")?.split(",")[0] || "127.0.0.1"
         ipDict[ip] = ipDict[ip] || {
             count: 0,
             registeredAt: Date.now(),

@@ -3,7 +3,8 @@ import env from "@/lib/env";
 import {s3Client} from "@/lib/s3/upload-article";
 import {NextRequest} from "next/server";
 
-export async function GET(req: NextRequest, {params: {filename}}: { params: { filename: string } }) {
+export async function GET(req: NextRequest, props: { params: Promise<{ filename: string }> }) {
+    const { filename } = await props.params;
     const getCommand = new GetObjectCommand({
         Bucket: env.S3_TMP_BUCKET,
         Key: filename,

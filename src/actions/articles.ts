@@ -9,7 +9,7 @@ import {slugify} from "../lib/utils";
 import {slugifyArticle} from "@/lib/server-utils";
 import {removeArticleImage, retrieveFileContents, storeFile} from "@/lib/fs/file-storage";
 import {verify} from "@/lib/auth/jwt";
-import {cookies} from "next/headers";
+import {cookies as nextCookies} from "next/headers";
 
 export async function createArticle(values: {
     title: string,
@@ -18,13 +18,14 @@ export async function createArticle(values: {
     featuredImage?: FormData,
     userId: string,
 }) {
+    const cookies = await nextCookies()
     try {
 
         const {title, excerpt, featuredImage} = createSchemaServer.parse(values)
         const slugifiedTitle = await slugifyArticle(title)
         let path = undefined
         if (featuredImage) {
-            const tokenCookie = cookies().get("auth_token")
+            const tokenCookie = cookies.get("auth_token")
             if (tokenCookie) {
                 const payload = await verify(tokenCookie.value)
                 path = await storeFile({title: slugifiedTitle, username: payload.username as string, file: featuredImage})
@@ -106,6 +107,7 @@ export async function editArticle(values: {
     featuredImage?: FormData | null | undefined,
     slug: string
 }) {
+    const cookies = await nextCookies()
     const {title, excerpt, featuredImage} = editSchemaServer.parse(values)
     try {
         const oldArticle = await db.query.articleSchema.findFirst({
@@ -127,7 +129,7 @@ export async function editArticle(values: {
         }
         let path = undefined
         if (featuredImage) {
-            const {username} = await verify(cookies().get("auth_token")?.value as unknown as string)
+            const {username} = await verify(cookies.get("auth_token")?.value as unknown as string)
             if (oldArticle.featuredImage) {
                 await removeArticleImage(oldArticle.featuredImage)
             }

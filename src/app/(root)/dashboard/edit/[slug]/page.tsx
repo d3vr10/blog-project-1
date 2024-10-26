@@ -6,7 +6,8 @@ import {retrieveFileContents} from "@/lib/fs/file-storage";
 import path from "path"
 import EditContainer from "@/components/forms/articles/EditContainer";
 
-export default async function Page({ params: { slug}}: { params: {slug: string} }) {
+export default async function Page(props: { params: Promise<{ slug: string }> }) {
+    const {slug} = await props.params;
     const article = await db.query.articleSchema.findFirst({
         where: eq(articleSchema.slug, slug)
     })
@@ -24,7 +25,13 @@ export default async function Page({ params: { slug}}: { params: {slug: string} 
     }
 
     return (
-        <EditContainer title={article.title} content={article.content} excerpt={article.excerpt} featuredImage={imageFile} slug={slug}/>
+        <EditContainer
+            title={article.title}
+            content={article.content}
+            excerpt={article.excerpt}
+            featuredImage={imageFile}
+            slug={slug}
+        />
     )
 
 }

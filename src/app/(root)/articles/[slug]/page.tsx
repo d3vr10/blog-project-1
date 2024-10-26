@@ -6,11 +6,10 @@ import Image from "next/image"
 import ClientDate from "@/app/(root)/articles/_components/client-date";
 import {Badge} from "@/components/ui/badge";
 import env from "@/lib/env"
-import dynamic from "next/dynamic";
+import BlocksToHTMLContainer from "@/components/article/editor/BlocksToHTMLContainer";
 
-const BlocksToHTML = dynamic(() => import("@/components/forms/articles/editor/BlocksToHTML"), {ssr: false})
-
-export default async function Page({params: {slug}}: { params: { slug: string } }) {
+export default async function Page(props: { params: Promise<{ slug: string }> }) {
+    const { slug } = await props.params;
     const [joinedResult] = await db.select()
         .from(articleSchema)
         .innerJoin(userSchema, eq(userSchema.id, articleSchema.userId))
@@ -46,7 +45,7 @@ export default async function Page({params: {slug}}: { params: { slug: string } 
                         {joinedResult.article.excerpt}
                     </blockquote>
                     <div className={"text-md"}>
-                        <BlocksToHTML content={joinedResult.article.content}/>
+                        <BlocksToHTMLContainer content={joinedResult.article.content}/>
                     </div>
                 </div>
             </article>

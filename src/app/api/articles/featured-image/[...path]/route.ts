@@ -3,7 +3,8 @@ import path from "path"
 import {streamFile} from "@/lib/streams/streams";
 import fs from "node:fs";
 
-export async function GET(req: Request, {params: {path: encodedPath}}: { params: { path: string[] } }) {
+export async function GET(req: Request, props: { params: Promise<{ path: string[] }> }) {
+    const {path: encodedPath} = await props.params;
     try {
         encodedPath[2] = decodeURIComponent(encodedPath[2])
         const key = encodedPath.join("/")

@@ -3,9 +3,10 @@ import env from "@/lib/env";
 import {s3Client} from "@/lib/s3/upload-article";
 import {NextRequest} from "next/server";
 
-export async function GET(req: NextRequest, {params: {username, slug, filename}}: {
-    params: { filename: string, username: string, slug: string }
+export async function GET(req: NextRequest, props: {
+    params: Promise<{ filename: string, username: string, slug: string }>,
 }) {
+    const {username, slug, filename} = await props.params;
     const getCommand = new GetObjectCommand({
         Bucket: env.S3_MEDIA_BUCKET,
         Key: `${username}/${slug}/${filename}`,
