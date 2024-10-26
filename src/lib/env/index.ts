@@ -1,6 +1,17 @@
 import path from "path"
 import z from "zod"
 import {logger} from "@/lib/logging/logger";
+import { existsSync} from "fs"
+
+const envFilePaths = ["./.env", "./.env.local"]
+for (const envFilePath of envFilePaths) {
+    if (!existsSync(path.resolve(envFilePath))) {
+        logger.warn(`Env file "${envFilePath}" doesn't exist. Skipping!`)
+        break;
+    }
+    process.loadEnvFile(envFilePath)
+    logger.info(`Loaded "${envFilePath}" env file."`)
+}
 
 const envSchema = z.object({
     JWT_SECRET: z.string().min(1),
