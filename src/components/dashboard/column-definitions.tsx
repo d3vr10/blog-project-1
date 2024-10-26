@@ -16,7 +16,7 @@ import {EyeIcon, EyeOffIcon, MoreHorizontal, PencilIcon, TrashIcon} from "lucide
 import {deleteArticle, toggleArticleVisibility} from "@/actions/articles";
 import {refreshArticles} from "@/actions/revalidate-path-cache";
 import Link from "next/link";
-import {revalidatePathAction} from "@/app/(root)/testing/actions";
+import {revalidatePath} from "@/actions/revalidate-path-cache"
 
 export const columns: ColumnDef<InferSelectModel<typeof articleSchema>>[] = [
     {
@@ -72,7 +72,7 @@ export const columns: ColumnDef<InferSelectModel<typeof articleSchema>>[] = [
                                     alert(result.error.message)
                                     return;
                                 }
-                                await revalidatePathAction("/dashboard", "page")
+                                await revalidatePath("/dashboard", "page")
 
                             }}
                         >

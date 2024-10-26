@@ -27,9 +27,10 @@ export default function CardContainer({article}: { article: any }) {
             setReady(true)
         }
         return () => {
-            if (fileURL) URL.revokeObjectURL(fileURL)
+            if (fileURL)
+                URL.revokeObjectURL(fileURL)
         }
-    }, [])
+    }, [article.featuredImage])
 
     if (!ready) {
         return <Skeleton/>

@@ -3,10 +3,11 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev --turbopack",
     "bootstrap": "drizzle-kit push && next build && next start",
     "build": "next build",
     "start": "next start",
+    "deploy": "next build && next start",
     "lint": "next lint",
     "db:push": "drizzle-kit push"
   },
@@ -43,11 +44,11 @@
     "jose": "^5.9.3",
     "lodash": "^4.17.21",
     "lucide-react": "^0.446.0",
-    "next": "14.2.13",
+    "next": "^15.0.1",
     "next-themes": "^0.3.0",
     "nodemailer": "^6.9.15",
-    "react": "^18",
-    "react-dom": "^18",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
     "react-hook-form": "^7.53.0",
     "request-ip": "^3.3.0",
     "shadcn": "^2.1.0",
@@ -66,14 +67,18 @@
     "@types/better-sqlite3": "^7.6.11",
     "@types/node": "^20",
     "@types/node-jose": "^1.1.13",
-    "@types/react": "^18",
-    "@types/react-dom": "^18",
+    "@types/react": "npm:types-react@19.0.0-rc.1",
+    "@types/react-dom": "npm:types-react-dom@19.0.0-rc.1",
     "@types/uuid": "^10.0.0",
     "drizzle-kit": "^0.22.8",
     "eslint": "^8",
-    "eslint-config-next": "14.2.13",
+    "eslint-config-next": "15.0.1",
     "postcss": "^8",
     "tailwindcss": "^3.4.1",
     "typescript": "^5"
+  },
+  "overrides": {
+    "@types/react": "npm:types-react@19.0.0-rc.1",
+    "@types/react-dom": "npm:types-react-dom@19.0.0-rc.1"
   }
 }

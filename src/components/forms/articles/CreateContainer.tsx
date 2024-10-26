@@ -39,10 +39,6 @@ export default function CreateContainer() {
     }, 5000, {leading: true})
     const {setError, register} = form
     const fileRef = register("featuredImage")
-    const [ongoing, startTransition] = useTransition()
-    useEffect(() => {
-    }, []);
-
     const onSubmit: SubmitHandler<CreateArticleSchemaClient> = async ({title, excerpt, featuredImage}) => {
         const validResult = await validateSession()
         if (validResult.error) {
@@ -96,6 +92,7 @@ export default function CreateContainer() {
 
         await refreshArticles()
         router.push("/")
+        router.refresh()
 
     }
 

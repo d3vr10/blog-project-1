@@ -1,14 +1,19 @@
 "use server";
 
-import {revalidatePath} from "next/cache";
+import {revalidatePath as nextRevalidatePath} from "next/cache";
 
 const articleRoutes: Set<[string, "page" | "layout" | undefined]> = new Set([
     ["/dashboard", "page"],
     ["/", "page"],
 ])
-export async function refreshArticles() {
 
+export async function refreshArticles() {
     for (const [route, type] of articleRoutes) {
-        revalidatePath(route, type)
+        console.log(`Refreshing route => "${route}" of type "${type}"`)
+        nextRevalidatePath(route, type)
     }
+}
+
+export async function revalidatePath(route: string, type?: "page" | "layout") {
+    nextRevalidatePath(route, type)
 }

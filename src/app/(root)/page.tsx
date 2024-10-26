@@ -3,6 +3,9 @@ import {retrieveFileContents} from "@/lib/fs/file-storage";
 import path from "path";
 import {default as ArticleCard} from "@/components/article/CardContainer"
 
+
+export const revalidate = 10
+
 export default async function Home() {
     const articles = await db.query.articleSchema.findMany()
 
